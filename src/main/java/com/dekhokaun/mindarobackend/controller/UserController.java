@@ -23,10 +23,9 @@ public class UserController {
         return ResponseEntity.ok(userService.authenticateOrRegister(request));
     }
 
-    @GetMapping("/exists/{email}")
-    public ResponseEntity<Boolean> checkUserExists(@PathVariable String email) {
-        boolean exists = userService.isEmailRegistered(email);
-        return ResponseEntity.ok(exists);
+    @PostMapping("/update")
+    public ResponseEntity<UserResponse> updateUserProfile(@RequestBody UserRequest request) {
+        return ResponseEntity.ok(userService.updateUserProfile(request));
     }
 
     @GetMapping("/{email}")

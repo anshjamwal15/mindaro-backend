@@ -5,6 +5,9 @@ import com.dekhokaun.mindarobackend.model.Mentor;
 import com.dekhokaun.mindarobackend.payload.request.MentorRequest;
 import com.dekhokaun.mindarobackend.repository.MentorRepository;
 import com.dekhokaun.mindarobackend.utils.ObjectMapperUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,10 +27,12 @@ public class MentorService {
         return ObjectMapperUtils.map(mentor, MentorDto.class);
     }
 
-    public List<MentorDto> getMentorsByCategory(String category) {
-        return mentorRepository.findByName(category).stream()
-                .map(mentor -> ObjectMapperUtils.map(mentor, MentorDto.class))
-                .collect(Collectors.toList());
+    // TODO: userid, language and category use case as no relations in table
+    public Page<MentorDto> getMentorsByCategory(String category, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Mentor> mentorPage = mentorRepository.finaAll(pageable);
+
+        return mentorPage.map(mentor -> ObjectMapperUtils.map(mentor, MentorDto.class));
     }
 
     public MentorDto getMentorDetails(String name) {

@@ -62,27 +62,31 @@ public class UserService {
         return ObjectMapperUtils.map(user, UserDto.class);
     }
 
-    public UserDto updateUserProfile(UserRequest request, String email) {
-        User user = userRepository.findByEmail(email)
+    public UserResponse updateUserProfile(UserRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (RegexUtils.isValidEmail(request.getEmail())) {
+        if (request.getEmail() != null && RegexUtils.isValidEmail(request.getEmail())) {
             user.setEmail(request.getEmail());
         }
-        if (RegexUtils.isValidUsername(request.getName())) {
+
+        if (request.getName() != null && RegexUtils.isValidUsername(request.getName())) {
             user.setName(request.getName());
         }
+
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
-            user.setPwd(request.getPassword());
             user.setPwd(passwordEncoder.encode(request.getPassword()));
         }
 
-        userRepository.save(user);
-        return ObjectMapperUtils.map(user, UserDto.class);
-    }
+        if (request.getMobile() != null && RegexUtils.isValidIndianMobile(request.getMobile())) {
+            user.setMobile(Long.valueOf(request.getMobile()));
+        }
 
-    public boolean isEmailRegistered(String email) {
-        return userRepository.existsByEmail(email);
+        if (request.getCountry() != null) {
+            user.setCountry(request.getCountry());
+        }
+        userRepository.save(user);
+        return mapToUserResponse(user);
     }
 
     public UserResponse getUserByEmail(String email) {
@@ -95,4 +99,5 @@ public class UserService {
     private UserResponse mapToUserResponse(User user) {
         return new UserResponse(user.getName(), user.getEmail(), String.valueOf(user.getMobile()), user.getCountry(), user.getUtype());
     }
+
 }

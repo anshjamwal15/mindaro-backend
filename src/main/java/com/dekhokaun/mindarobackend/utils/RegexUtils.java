@@ -37,4 +37,16 @@ public class RegexUtils {
 
         return m.matches();
     }
+
+    public static boolean isValidIndianMobile(String mobile) {
+        String regex = "^[6789]\\d{9}$";
+        Pattern p = Pattern.compile(regex);
+
+        if (mobile == null) {
+            return false;
+        }
+
+        Matcher m = p.matcher(mobile);
+        return m.matches();
+    }
 }
