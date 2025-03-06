@@ -20,9 +20,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> registerUser(@RequestBody UserRequest request) {
-        UserDto userDto = userService.registerUser(request);
-        UserResponse response = ObjectMapperUtils.map(userDto, UserResponse.class);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(userService.authenticateOrRegister(request));
     }
 
     @GetMapping("/exists/{email}")

@@ -17,4 +17,8 @@ public class UserRequest {
     private String country;
 
     private String password;
+    private String token;
+
+    @NotBlank
+    private String method;
 }

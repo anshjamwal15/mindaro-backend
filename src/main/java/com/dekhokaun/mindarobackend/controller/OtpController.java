@@ -16,13 +16,13 @@ public class OtpController {
         this.otpService = otpService;
     }
 
-//    @PostMapping("/send")
-//    public ResponseEntity<OtpResponse> sendOtp(@RequestBody OtpRequest request) {
-//        return ResponseEntity.ok(otpService.(request));
-//    }
+    @PostMapping("/send")
+    public ResponseEntity<OtpResponse> sendOtp(@RequestBody OtpRequest request) {
+        return ResponseEntity.ok(otpService.generateOtp(request));
+    }
 
-//    @PostMapping("/verify")
-//    public ResponseEntity<OtpResponse> verifyOtp(@RequestBody OtpRequest request) {
-//        return ResponseEntity.ok(otpService.verifyOtp(request));
-//    }
+    @PostMapping("/verify")
+    public ResponseEntity<OtpResponse> verifyOtp(@RequestBody OtpRequest request) {
+        return ResponseEntity.ok(otpService.verifyOtp(request));
+    }
 }

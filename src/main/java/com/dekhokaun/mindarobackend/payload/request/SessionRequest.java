@@ -7,8 +7,13 @@ import lombok.Data;
 public class SessionRequest {
 
     @NotBlank
-    private String userId;
+    private String userid;
 
-    @NotBlank
-    private String device;
+    private String browser;
+
+    private String ip;
+
+    private String gps;
+
+    private String loginType;
 }

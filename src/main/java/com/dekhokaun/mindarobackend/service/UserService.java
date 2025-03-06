@@ -7,35 +7,52 @@ import com.dekhokaun.mindarobackend.payload.response.UserResponse;
 import com.dekhokaun.mindarobackend.repository.UserRepository;
 import com.dekhokaun.mindarobackend.utils.ObjectMapperUtils;
 import com.dekhokaun.mindarobackend.utils.RegexUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Optional;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    // PasswordEncoder passwordEncoder use this as password encoder in user service params
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-//        this.passwordEncoder = passwordEncoder;
     }
 
-    public UserDto registerUser(UserRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already in use");
+    @Transactional
+    public UserResponse authenticateOrRegister(UserRequest request) {
+        Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
+
+        if (existingUser.isPresent()) {
+            // User Exists: Verify via Google or Password
+            User user = existingUser.get();
+
+            if ("google".equalsIgnoreCase(request.getMethod())) {
+                if (!request.getToken().equals(user.getToken())) {
+                    throw new RuntimeException("Invalid Google authentication token");
+                }
+            } else {
+                if (!passwordEncoder.matches(request.getPassword(), user.getPwd())) {
+                    throw new RuntimeException("Invalid password");
+                }
+            }
+            return mapToUserResponse(user);
         }
 
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setName(request.getName());
-        // passwordEncoder.encode(request.getPassword())
-        user.setPwd(request.getPassword());
-        userRepository.save(user);
+        // User Doesn't Exist: Create New User
+        User newUser = new User();
+        newUser.setEmail(request.getEmail());
+        newUser.setName(request.getName());
+        newUser.setToken(request.getMethod().equalsIgnoreCase("google") ? request.getToken() : null);
+        newUser.setPwd(passwordEncoder.encode(request.getPassword()));
+        userRepository.save(newUser);
 
-        return ObjectMapperUtils.map(user, UserDto.class);
+        return mapToUserResponse(newUser);
     }
 
     public UserDto getUserProfile(String email) {
@@ -57,7 +74,7 @@ public class UserService {
         }
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
             user.setPwd(request.getPassword());
-//            user.setPwd(passwordEncoder.encode(request.getPassword()));
+            user.setPwd(passwordEncoder.encode(request.getPassword()));
         }
 
         userRepository.save(user);
@@ -73,5 +90,9 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
         return new UserResponse(user.getName(), user.getEmail(), user.getMobile().toString(), user.getCountry(), user.getUtype());
+    }
+
+    private UserResponse mapToUserResponse(User user) {
+        return new UserResponse(user.getName(), user.getEmail(), String.valueOf(user.getMobile()), user.getCountry(), user.getUtype());
     }
 }

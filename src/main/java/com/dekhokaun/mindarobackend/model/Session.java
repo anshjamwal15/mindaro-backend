@@ -16,16 +16,16 @@ public class Session {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String fbid;
 
     @Column(length = 50, nullable = false)
     private String userid;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100)
     private String ip;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 200)
     private String browser;
 
     @CreationTimestamp
@@ -42,6 +42,6 @@ public class Session {
     @Column
     private LocalDateTime logouttime;
 
-    @Column(length = 25, nullable = false)
+    @Column(length = 25)
     private String logintype;
 }
