@@ -4,17 +4,20 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
+
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "x1_session")
 @Getter
 @Setter
 public class Session {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @UuidGenerator
+    @Column(updatable = false, nullable = false, columnDefinition = "UUID")
+    private UUID id;
 
     @Column(columnDefinition = "TEXT")
     private String fbid;
@@ -44,4 +47,21 @@ public class Session {
 
     @Column(length = 25)
     private String logintype;
+
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

@@ -24,15 +24,15 @@ public class MentorController {
 //        return ResponseEntity.ok(mentorService.getMentors());
 //    }
 
-    @GetMapping("/category/{category}")
-    public ResponseEntity<Page<MentorDto>> getMentorsByCategory(
-            @PathVariable String category,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        Page<MentorDto> mentorPage = mentorService.getMentorsByCategory(category, page, size);
-        return ResponseEntity.ok(mentorPage);
-    }
+//    @GetMapping("/category/{category}")
+//    public ResponseEntity<Page<MentorDto>> getMentorsByCategory(
+//            @PathVariable String category,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size) {
+//
+//        Page<MentorDto> mentorPage = mentorService.getMentorsByCategory(category, page, size);
+//        return ResponseEntity.ok(mentorPage);
+//    }
 
     @DeleteMapping("/delete/{name}")
     public ResponseEntity<Void> deleteMentor(@PathVariable String name) {

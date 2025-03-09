@@ -1,45 +1,37 @@
 package com.dekhokaun.mindarobackend.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "zd2_menu")
+@Table(name = "a1_transactions")
 @Getter
 @Setter
-public class Menu {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Transaction {
     @Id
     @UuidGenerator
     @Column(updatable = false, nullable = false, columnDefinition = "UUID")
     private UUID id;
 
-    @Column(nullable = false)
-    private Integer code;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String icon;
+    @ManyToOne
+    @JoinColumn(name = "mentor_id")
+    private Mentor mentor;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String text;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String action;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String link;
-
-    @Column(nullable = false)
-    private Integer orderx;
-
-    @Column(nullable = false)
-    private Integer status;
+    private String transactionType; // chat, call, meeting
+    private boolean isScheduled;
+    private LocalDateTime scheduledTime;
+    private BigDecimal amountSpent;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

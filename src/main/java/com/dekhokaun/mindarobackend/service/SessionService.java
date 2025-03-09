@@ -7,6 +7,7 @@ import com.dekhokaun.mindarobackend.repository.SessionRepository;
 import com.dekhokaun.mindarobackend.utils.ObjectMapperUtils;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +32,6 @@ public class SessionService {
     }
 
     public void endSession(String sessionId) {
-        sessionRepository.deleteById(Integer.valueOf(sessionId));
+        sessionRepository.deleteById(UUID.fromString(sessionId));
     }
 }

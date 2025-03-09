@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface OtpRepository extends BaseRepository<Otp, Integer> {
+public interface OtpRepository extends BaseRepository<Otp> {
 
     // mobile == email
     Optional<Otp> findByUseridAndMobileAndOtpType(String userid, String mobileOrEmail, String otpType);

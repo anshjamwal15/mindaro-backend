@@ -4,17 +4,20 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
+
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "x2_otp")
 @Getter
 @Setter
 public class Otp {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @UuidGenerator
+    @Column(updatable = false, nullable = false, columnDefinition = "UUID")
+    private UUID id;
 
     @Column(length = 50, nullable = false)
     private String userid;
@@ -46,7 +49,20 @@ public class Otp {
     @Column(length = 20, nullable = false)
     private String status;
 
-    @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime cdt;
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

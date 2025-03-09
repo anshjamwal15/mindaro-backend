@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends BaseRepository<User, Integer> {
+public interface UserRepository extends BaseRepository<User> {
 
 //    Page<User> findAll(Pageable pageable);
 

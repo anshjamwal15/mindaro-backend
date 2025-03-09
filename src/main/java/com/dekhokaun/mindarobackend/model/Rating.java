@@ -1,45 +1,42 @@
 package com.dekhokaun.mindarobackend.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "zd2_menu")
+@Table(name = "a1_ratings")
 @Getter
 @Setter
-public class Menu {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Rating {
     @Id
     @UuidGenerator
     @Column(updatable = false, nullable = false, columnDefinition = "UUID")
     private UUID id;
 
-    @Column(nullable = false)
-    private Integer code;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String icon;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String text;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String action;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String link;
+    @ManyToOne
+    @JoinColumn(name = "mentor_id", nullable = false)
+    private Mentor mentor;
 
     @Column(nullable = false)
-    private Integer orderx;
+    private Integer rating;
 
-    @Column(nullable = false)
-    private Integer status;
+    private String review;
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isApproved = false;
+
+    private String userIp;
+    private String deviceInfo;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

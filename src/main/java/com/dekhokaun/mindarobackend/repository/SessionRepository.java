@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SessionRepository extends BaseRepository<Session, Integer> {
+public interface SessionRepository extends BaseRepository<Session> {
 
     List<Session> findByUserid(String userId);
 

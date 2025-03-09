@@ -5,17 +5,22 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
+
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "d3_category")
 @Getter
 @Setter
 public class Category {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @UuidGenerator
+    @Column(updatable = false, nullable = false, columnDefinition = "UUID")
+    private UUID id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String fbid;
@@ -53,10 +58,23 @@ public class Category {
     @Column(nullable = false)
     private Integer status;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime cdt;
+    @ManyToMany(mappedBy = "categories")
+    private List<Mentor> mentors;
 
-    @UpdateTimestamp
-    private LocalDateTime mdt;
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

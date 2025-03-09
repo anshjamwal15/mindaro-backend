@@ -2,9 +2,12 @@ package com.dekhokaun.mindarobackend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "a1_user")
@@ -14,8 +17,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @UuidGenerator
+    @Column(updatable = false, nullable = false, columnDefinition = "UUID")
+    private UUID id;
 
     private Integer umid;
 
@@ -23,8 +27,6 @@ public class User {
 
     @Column(columnDefinition = "TEXT")
     private String userfbid;
-
-    private Integer mentorid;
 
     @Column(columnDefinition = "TEXT")
     private String mentorfbid;
@@ -54,14 +56,6 @@ public class User {
     private Integer parentid;
 
     @Column(columnDefinition = "TEXT")
-    private String createdAt;
-
-    @Column(updatable = false)
-    private LocalDateTime cdt = LocalDateTime.now();
-
-    private LocalDateTime mdt = LocalDateTime.now();
-
-    @Column(columnDefinition = "TEXT")
     private String token;
 
     @Column(precision = 5, scale = 2)
@@ -72,8 +66,30 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String howtoknow;
 
+    @ManyToOne
+    @JoinColumn(name = "mentor_id")
+    private Mentor mentor;
+
+    @OneToMany(mappedBy = "user")
+    private List<Rating> ratings;
+
+    @OneToMany(mappedBy = "user")
+    private List<Transaction> transactions;
+
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
     @PreUpdate
     protected void onUpdate() {
-        mdt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 }

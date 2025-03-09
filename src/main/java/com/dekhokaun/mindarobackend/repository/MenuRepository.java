@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MenuRepository extends BaseRepository<Menu, Integer> {
+public interface MenuRepository extends BaseRepository<Menu> {
 
     List<Menu> findByStatus(Integer status);
 

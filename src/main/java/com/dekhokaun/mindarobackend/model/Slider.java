@@ -5,17 +5,20 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
+
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "d1_slider")
 @Getter
 @Setter
 public class Slider {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @UuidGenerator
+    @Column(updatable = false, nullable = false, columnDefinition = "UUID")
+    private UUID id;
 
     @Column(columnDefinition = "TEXT")
     private String fbid;
@@ -42,10 +45,20 @@ public class Slider {
 
     private Integer status;
 
-    @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime cdt;
+    private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private LocalDateTime mdt;
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
