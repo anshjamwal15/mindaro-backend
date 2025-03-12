@@ -3,9 +3,6 @@ package com.dekhokaun.mindarobackend.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,9 +12,10 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Slider {
+    // TODO: Fix uuid related db issue
     @Id
-    @UuidGenerator
-    @Column(updatable = false, nullable = false, columnDefinition = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(length = 36, unique = true, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column(columnDefinition = "TEXT")

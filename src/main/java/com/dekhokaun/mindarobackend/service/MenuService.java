@@ -1,11 +1,12 @@
 package com.dekhokaun.mindarobackend.service;
 
-import com.dekhokaun.mindarobackend.dto.MenuDto;
 import com.dekhokaun.mindarobackend.model.Menu;
 import com.dekhokaun.mindarobackend.payload.request.MenuRequest;
+import com.dekhokaun.mindarobackend.payload.response.MenuResponse;
 import com.dekhokaun.mindarobackend.repository.MenuRepository;
 import com.dekhokaun.mindarobackend.utils.ObjectMapperUtils;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,22 +19,22 @@ public class MenuService {
         this.menuRepository = menuRepository;
     }
 
-    public MenuDto addMenuItem(MenuRequest request) {
+    public MenuResponse addMenuItem(MenuRequest request) {
         Menu menu = ObjectMapperUtils.map(request, Menu.class);
         menuRepository.save(menu);
-        return ObjectMapperUtils.map(menu, MenuDto.class);
+        return ObjectMapperUtils.map(menu, MenuResponse.class);
     }
 
-    public List<MenuDto> getAllMenuItems() {
+    public List<MenuResponse> getAllMenuItems() {
         return menuRepository.findAll().stream()
-                .map(menu -> ObjectMapperUtils.map(menu, MenuDto.class))
+                .map(menu -> ObjectMapperUtils.map(menu, MenuResponse.class))
                 .collect(Collectors.toList());
     }
 
-    public MenuDto getMenuItem(String text) {
+    public MenuResponse getMenuItem(String text) {
         Menu menu = menuRepository.findByText(text)
                 .orElseThrow(() -> new RuntimeException("Menu item not found"));
-        return ObjectMapperUtils.map(menu, MenuDto.class);
+        return ObjectMapperUtils.map(menu, MenuResponse.class);
     }
 
     public void updateMenu(String text, MenuRequest request) {

@@ -1,11 +1,12 @@
 package com.dekhokaun.mindarobackend.service;
 
-import com.dekhokaun.mindarobackend.dto.SessionDto;
 import com.dekhokaun.mindarobackend.model.Session;
 import com.dekhokaun.mindarobackend.payload.request.SessionRequest;
+import com.dekhokaun.mindarobackend.payload.response.SessionResponse;
 import com.dekhokaun.mindarobackend.repository.SessionRepository;
 import com.dekhokaun.mindarobackend.utils.ObjectMapperUtils;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -19,15 +20,15 @@ public class SessionService {
         this.sessionRepository = sessionRepository;
     }
 
-    public SessionDto createSession(SessionRequest request) {
+    public SessionResponse createSession(SessionRequest request) {
         Session session = ObjectMapperUtils.map(request, Session.class);
         sessionRepository.save(session);
-        return ObjectMapperUtils.map(session, SessionDto.class);
+        return ObjectMapperUtils.map(session, SessionResponse.class);
     }
 
-    public List<SessionDto> getUserSessions(String userId) {
+    public List<SessionResponse> getUserSessions(String userId) {
         return sessionRepository.findByUserid(userId).stream()
-                .map(session -> ObjectMapperUtils.map(session, SessionDto.class))
+                .map(session -> ObjectMapperUtils.map(session, SessionResponse.class))
                 .collect(Collectors.toList());
     }
 

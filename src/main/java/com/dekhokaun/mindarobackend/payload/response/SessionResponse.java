@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class SessionResponse {
-
-    private String sessionId;
-    private boolean isNew;
+    private String id;
+    private String userId;
+    private String startTime;
+    private String endTime;
 }

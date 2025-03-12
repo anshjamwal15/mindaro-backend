@@ -1,6 +1,5 @@
 package com.dekhokaun.mindarobackend.service;
 
-import com.dekhokaun.mindarobackend.dto.UserDto;
 import com.dekhokaun.mindarobackend.model.User;
 import com.dekhokaun.mindarobackend.payload.request.UserRequest;
 import com.dekhokaun.mindarobackend.payload.response.UserResponse;
@@ -55,11 +54,11 @@ public class UserService {
         return mapToUserResponse(newUser);
     }
 
-    public UserDto getUserProfile(String email) {
+    public UserResponse getUserProfile(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return ObjectMapperUtils.map(user, UserDto.class);
+        return ObjectMapperUtils.map(user, UserResponse.class);
     }
 
     public UserResponse updateUserProfile(UserRequest request) {
@@ -93,11 +92,11 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
-        return new UserResponse(user.getName(), user.getEmail(), user.getMobile().toString(), user.getCountry(), user.getUtype());
+        return new UserResponse(user.getId().toString(), user.getName(), user.getEmail(), user.getMobile().toString(), user.getCountry(), user.getUtype());
     }
 
     private UserResponse mapToUserResponse(User user) {
-        return new UserResponse(user.getName(), user.getEmail(), String.valueOf(user.getMobile()), user.getCountry(), user.getUtype());
+        return new UserResponse(user.getId().toString(), user.getName(), user.getEmail(), String.valueOf(user.getMobile()), user.getCountry(), user.getUtype());
     }
 
 }

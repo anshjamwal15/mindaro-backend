@@ -1,9 +1,14 @@
 package com.dekhokaun.mindarobackend.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "a1_orders")
@@ -13,8 +18,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(length = 36, unique = true, nullable = false, columnDefinition = "BINARY(16)")
+    private UUID id;
 
     @OneToOne
     @JoinColumn(name = "transaction_id")

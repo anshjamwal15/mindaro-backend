@@ -1,8 +1,10 @@
 package com.dekhokaun.mindarobackend.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,8 +20,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Mentor {
     @Id
-    @UuidGenerator
-    @Column(updatable = false, nullable = false, columnDefinition = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(length = 36, unique = true, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
