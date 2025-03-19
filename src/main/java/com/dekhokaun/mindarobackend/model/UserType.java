@@ -3,15 +3,14 @@ package com.dekhokaun.mindarobackend.model;
 import lombok.Getter;
 
 @Getter
-public enum MentorType {
-    BASIC("B"),
-    PREMIUM("P"),
-    ELITE("E");
+public enum UserType {
+    ADMIN("A"),
+    MENTOR("M"),
+    CUSTOMER("C");
 
     private final String code;
 
-    MentorType(String code) {
+    UserType(String code) {
         this.code = code;
     }
-
 }

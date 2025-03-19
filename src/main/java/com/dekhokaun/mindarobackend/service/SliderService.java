@@ -38,7 +38,7 @@ public class SliderService {
 
     public SliderResponse updateSlider(SliderRequest request) {
 //        Slider slider = sliderRepository.findById(request.ge())
-//                .orElseThrow(() -> new RuntimeException("Slider not found"));
+//                .orElseThrow(() -> new InvalidRequestException("Slider not found"));
 //
 //        slider.setTitle(request.getTitle());
 //        slider.setImageUrl(request.getImageUrl());

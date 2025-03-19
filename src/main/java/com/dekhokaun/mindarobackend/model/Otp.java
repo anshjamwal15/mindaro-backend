@@ -3,22 +3,26 @@ package com.dekhokaun.mindarobackend.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "x2_otp")
 @Getter
 @Setter
 public class Otp {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, unique = true, nullable = false, columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "BINARY(16)", unique = true, nullable = false)
     private UUID id;
 
-    @Column(length = 50, nullable = false)
-    private String userid;
+    @Column(columnDefinition = "BINARY(16)", nullable = false)
+    private UUID userid;
 
     @Column(length = 11, nullable = false)
     private String otpType;

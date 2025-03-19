@@ -5,11 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "a1_ratings")
 @Getter
 @Setter
@@ -18,7 +22,7 @@ import java.util.UUID;
 public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, unique = true, nullable = false, columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "BINARY(16)", unique = true, nullable = false)
     private UUID id;
 
     @ManyToOne

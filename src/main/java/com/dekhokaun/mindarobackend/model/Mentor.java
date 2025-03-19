@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +15,8 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "a1_mentor")
 @Getter
 @Setter
@@ -21,7 +25,7 @@ import java.util.UUID;
 public class Mentor {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(length = 36, unique = true, nullable = false, columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "BINARY(16)", unique = true, nullable = false)
     private UUID id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
@@ -33,7 +37,7 @@ public class Mentor {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String name;
 
-    @Column(columnDefinition = "TEXT", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false, unique = true)
@@ -141,6 +145,14 @@ public class Mentor {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+
+        if (utype == null) {
+            utype = MentorType.BASIC;
+        }
+
+        if (status == null) {
+            status = MentorStatus.PENDING_APPROVAL;
+        }
     }
 
     @PreUpdate

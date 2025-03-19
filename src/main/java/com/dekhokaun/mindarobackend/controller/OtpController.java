@@ -5,6 +5,7 @@ import com.dekhokaun.mindarobackend.payload.response.OtpResponse;
 import com.dekhokaun.mindarobackend.service.OtpService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +25,8 @@ public class OtpController {
 
     @Operation(summary = "Send an OTP", description = "Generates and sends an OTP to the user")
     @PostMapping("/send")
-    public ResponseEntity<OtpResponse> sendOtp(@RequestBody OtpRequest request) {
+    public ResponseEntity<OtpResponse> sendOtp(@RequestBody OtpRequest request, HttpServletRequest httpRequest) {
+        request.setIp(httpRequest.getRemoteAddr());
         return ResponseEntity.ok(otpService.generateOtp(request));
     }
 

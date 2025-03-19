@@ -1,5 +1,6 @@
 package com.dekhokaun.mindarobackend.service;
 
+import com.dekhokaun.mindarobackend.exception.InvalidRequestException;
 import com.dekhokaun.mindarobackend.model.Category;
 import com.dekhokaun.mindarobackend.payload.request.CategoryRequest;
 import com.dekhokaun.mindarobackend.payload.response.CategoryResponse;
@@ -33,13 +34,13 @@ public class CategoryService {
 
     public CategoryResponse getCategoryByName(String name) {
         Category category = categoryRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new InvalidRequestException("Category not found"));
         return ObjectMapperUtils.map(category, CategoryResponse.class);
     }
 
     public CategoryResponse updateCategory(String name, CategoryRequest request) {
         Category category = categoryRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new InvalidRequestException("Category not found"));
 
         category.setName(request.getDescription());
         categoryRepository.save(category);

@@ -1,5 +1,6 @@
 package com.dekhokaun.mindarobackend.service;
 
+import com.dekhokaun.mindarobackend.exception.InvalidRequestException;
 import com.dekhokaun.mindarobackend.model.Menu;
 import com.dekhokaun.mindarobackend.payload.request.MenuRequest;
 import com.dekhokaun.mindarobackend.payload.response.MenuResponse;
@@ -33,13 +34,13 @@ public class MenuService {
 
     public MenuResponse getMenuItem(String text) {
         Menu menu = menuRepository.findByText(text)
-                .orElseThrow(() -> new RuntimeException("Menu item not found"));
+                .orElseThrow(() -> new InvalidRequestException("Menu item not found"));
         return ObjectMapperUtils.map(menu, MenuResponse.class);
     }
 
     public void updateMenu(String text, MenuRequest request) {
         Menu menu = menuRepository.findByText(text)
-                .orElseThrow(() -> new RuntimeException("Menu item not found"));
+                .orElseThrow(() -> new InvalidRequestException("Menu item not found"));
 
         menu.setIcon(request.getIcon());
         menu.setAction(request.getAction());

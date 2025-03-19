@@ -7,6 +7,7 @@ import com.dekhokaun.mindarobackend.repository.SessionRepository;
 import com.dekhokaun.mindarobackend.utils.ObjectMapperUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,12 +28,19 @@ public class SessionService {
     }
 
     public List<SessionResponse> getUserSessions(String userId) {
-        return sessionRepository.findByUserid(userId).stream()
+        return sessionRepository.findByUserid(UUID.fromString(userId)).stream()
                 .map(session -> ObjectMapperUtils.map(session, SessionResponse.class))
                 .collect(Collectors.toList());
     }
 
     public void endSession(String sessionId) {
         sessionRepository.deleteById(UUID.fromString(sessionId));
+    }
+
+    public void updateLogoutTime(String sessionId) {
+        Session session = sessionRepository.findById(UUID.fromString(sessionId))
+                .orElseThrow(() -> new RuntimeException("Session not found"));
+        session.setLogouttime(LocalDateTime.now());
+        sessionRepository.save(session);
     }
 }
