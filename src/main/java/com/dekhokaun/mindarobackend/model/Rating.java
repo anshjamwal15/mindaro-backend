@@ -14,42 +14,35 @@ import java.util.UUID;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "d1_slider")
+@Table(name = "a1_ratings")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Slider {
-    // TODO: Fix uuid related db issue
+public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "BINARY(16)", unique = true, nullable = false)
     private UUID id;
 
-    @Column(columnDefinition = "TEXT")
-    private String fbid;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    private LocalDateTime datefrom;
+    @ManyToOne
+    @JoinColumn(name = "mentor_id", nullable = false)
+    private Mentor mentor;
 
-    private LocalDateTime dateto;
+    @Column(nullable = false)
+    private Integer rating;
 
-    @Column(length = 11)
-    private String lot;
+    private String review;
 
-    private Integer code;
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isApproved = false;
 
-    @Column(columnDefinition = "TEXT")
-    private String imagename;
-
-    @Column(columnDefinition = "TEXT")
-    private String action;
-
-    @Column(columnDefinition = "TEXT")
-    private String link;
-
-    private Integer orderx;
-
-    private Integer status;
+    private String userIp;
+    private String deviceInfo;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

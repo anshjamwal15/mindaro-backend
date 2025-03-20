@@ -3,19 +3,24 @@ package com.dekhokaun.mindarobackend.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "d3_category")
 @Getter
 @Setter
 public class Category {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "BINARY(16)", unique = true, nullable = false)
+    private UUID id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String fbid;
@@ -53,10 +58,23 @@ public class Category {
     @Column(nullable = false)
     private Integer status;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime cdt;
+    @ManyToMany(mappedBy = "categories")
+    private List<Mentor> mentors;
 
-    @UpdateTimestamp
-    private LocalDateTime mdt;
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

@@ -1,12 +1,22 @@
 package com.dekhokaun.mindarobackend.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "a1_mentor")
 @Getter
 @Setter
@@ -14,37 +24,40 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Mentor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "BINARY(16)", unique = true, nullable = false)
+    private UUID id;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String mentorfbid;
 
     private Integer umid;
-
     private Integer gcode;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false, unique = true)
     private Long mobile;
 
     @Column(length = 5)
     private String country;
 
-    @Column(columnDefinition = "TINYTEXT")
+    @Column(length = 11, nullable = false)
     private String pwd;
 
-    @Column(length = 11)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 1, nullable = false)
+    private MentorStatus status;
 
     private Integer ulevel;
 
-    @Column(length = 7)
-    private String utype;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 1, nullable = false)
+    private MentorType utype;
 
     private Integer parentid;
 
@@ -80,7 +93,6 @@ public class Mentor {
     private Integer pincode;
 
     private Integer totalexpyrs;
-
     private Integer timeweeklyhrs;
 
     @Column(columnDefinition = "TEXT")
@@ -93,30 +105,58 @@ public class Mentor {
     private String mainincome;
 
     @Column(columnDefinition = "TEXT")
-    private String tw; // Twitter
+    private String tw;
 
     @Column(columnDefinition = "TEXT")
     private String linkedin;
 
     @Column(columnDefinition = "TEXT")
-    private String yt; // YouTube
+    private String yt;
 
     @Column(columnDefinition = "TEXT")
-    private String fb; // Facebook
+    private String fb;
 
-    private Integer rating;
+    @Column(nullable = false)
+    private Double rating = 0.0;
 
-    private Integer ratingcount;
+    @Column(nullable = false)
+    private Integer ratingCount = 0;
 
     private Integer rate;
 
-    @Column(updatable = false)
-    private LocalDateTime cdt = LocalDateTime.now(); // Created Timestamp
+    @OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Rating> ratings;
 
-    private LocalDateTime mdt = LocalDateTime.now(); // Modified Timestamp
+        @ManyToMany
+        @JoinTable(
+                name = "mentor_category",
+                joinColumns = @JoinColumn(name = "mentor_id"),
+                inverseJoinColumns = @JoinColumn(name = "category_id")
+        )
+        private Set<Category> categories;
+
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+
+        if (utype == null) {
+            utype = MentorType.BASIC;
+        }
+
+        if (status == null) {
+            status = MentorStatus.PENDING_APPROVAL;
+        }
+    }
 
     @PreUpdate
     protected void onUpdate() {
-        mdt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 }

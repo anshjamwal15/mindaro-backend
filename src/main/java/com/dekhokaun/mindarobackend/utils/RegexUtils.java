@@ -2,11 +2,20 @@ package com.dekhokaun.mindarobackend.utils;
 
 import lombok.Data;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Data
 public class RegexUtils {
+
+    private static final Map<String, Integer> COUNTRY_PHONE_LENGTHS = Map.of(
+            "IN", 10,
+            "US", 10,
+            "UK", 10,
+            "CA", 10,
+            "AU", 9
+    );
 
     public static boolean isValidUsername(String name) {
 
@@ -38,15 +47,12 @@ public class RegexUtils {
         return m.matches();
     }
 
-    public static boolean isValidIndianMobile(String mobile) {
-        String regex = "^[6789]\\d{9}$";
-        Pattern p = Pattern.compile(regex);
-
-        if (mobile == null) {
+    public static boolean isValidPhoneNumber(String phoneNumber, String countryCode) {
+        if (phoneNumber == null || countryCode == null) {
             return false;
         }
-
-        Matcher m = p.matcher(mobile);
-        return m.matches();
+        Integer expectedLength = COUNTRY_PHONE_LENGTHS.get(countryCode.toUpperCase());
+        return expectedLength != null && phoneNumber.length() == expectedLength;
     }
+
 }

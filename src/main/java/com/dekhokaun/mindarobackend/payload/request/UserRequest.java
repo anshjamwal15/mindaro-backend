@@ -13,11 +13,15 @@ public class UserRequest {
     @Email
     private String email;
 
+    @NotBlank
     private String mobile;
+
+    @NotBlank
     private String country;
 
+    @NotBlank
     private String password;
-    private String token;
+    private String token; // google_token if method is google
 
     @NotBlank
     private String method;

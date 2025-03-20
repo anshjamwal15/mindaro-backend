@@ -1,26 +1,36 @@
 package com.dekhokaun.mindarobackend.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "x1_session")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Session {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "BINARY(16)", unique = true, nullable = false)
+    private UUID id;
 
     @Column(columnDefinition = "TEXT")
     private String fbid;
 
-    @Column(length = 50, nullable = false)
-    private String userid;
+    @Column(columnDefinition = "BINARY(16)", nullable = false)
+    private UUID userid;
 
     @Column(length = 100)
     private String ip;
@@ -44,4 +54,21 @@ public class Session {
 
     @Column(length = 25)
     private String logintype;
+
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

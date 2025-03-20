@@ -1,12 +1,13 @@
 package com.dekhokaun.mindarobackend.service;
 
-import com.dekhokaun.mindarobackend.dto.UserDto;
+import com.dekhokaun.mindarobackend.exception.InvalidAuthException;
+import com.dekhokaun.mindarobackend.exception.InvalidRequestException;
 import com.dekhokaun.mindarobackend.model.User;
 import com.dekhokaun.mindarobackend.payload.request.UserRequest;
 import com.dekhokaun.mindarobackend.payload.response.UserResponse;
 import com.dekhokaun.mindarobackend.repository.UserRepository;
-import com.dekhokaun.mindarobackend.utils.ObjectMapperUtils;
 import com.dekhokaun.mindarobackend.utils.RegexUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,14 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Transactional
     public UserResponse authenticateOrRegister(UserRequest request) {
@@ -34,11 +32,11 @@ public class UserService {
 
             if ("google".equalsIgnoreCase(request.getMethod())) {
                 if (!request.getToken().equals(user.getToken())) {
-                    throw new RuntimeException("Invalid Google authentication token");
+                    throw new InvalidAuthException("Invalid Google authentication token");
                 }
             } else {
                 if (!passwordEncoder.matches(request.getPassword(), user.getPwd())) {
-                    throw new RuntimeException("Invalid password");
+                    throw new InvalidRequestException("Invalid password");
                 }
             }
             return mapToUserResponse(user);
@@ -48,23 +46,28 @@ public class UserService {
         User newUser = new User();
         newUser.setEmail(request.getEmail());
         newUser.setName(request.getName());
-        newUser.setToken(request.getMethod().equalsIgnoreCase("google") ? request.getToken() : null);
         newUser.setPwd(passwordEncoder.encode(request.getPassword()));
+        newUser.setCountry(request.getCountry());
+
+        String mobile = request.getMobile();
+        if (mobile != null && !mobile.isEmpty() && RegexUtils.isValidPhoneNumber(request.getMobile(), "IN")) {
+            newUser.setMobile(Long.valueOf(request.getMobile()));
+        }
         userRepository.save(newUser);
 
         return mapToUserResponse(newUser);
     }
 
-    public UserDto getUserProfile(String email) {
+    public UserResponse getUserProfile(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new InvalidRequestException("User not found"));
 
-        return ObjectMapperUtils.map(user, UserDto.class);
+        return mapToUserResponse(user);
     }
 
     public UserResponse updateUserProfile(UserRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new InvalidRequestException("User not found"));
 
         if (request.getEmail() != null && RegexUtils.isValidEmail(request.getEmail())) {
             user.setEmail(request.getEmail());
@@ -78,7 +81,7 @@ public class UserService {
             user.setPwd(passwordEncoder.encode(request.getPassword()));
         }
 
-        if (request.getMobile() != null && RegexUtils.isValidIndianMobile(request.getMobile())) {
+        if (request.getMobile() != null && RegexUtils.isValidPhoneNumber(request.getMobile(), "IN")) {
             user.setMobile(Long.valueOf(request.getMobile()));
         }
 
@@ -91,13 +94,13 @@ public class UserService {
 
     public UserResponse getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+                .orElseThrow(() -> new InvalidRequestException("User not found with email: " + email));
 
-        return new UserResponse(user.getName(), user.getEmail(), user.getMobile().toString(), user.getCountry(), user.getUtype());
+        return mapToUserResponse(user);
     }
 
     private UserResponse mapToUserResponse(User user) {
-        return new UserResponse(user.getName(), user.getEmail(), String.valueOf(user.getMobile()), user.getCountry(), user.getUtype());
+        return new UserResponse(user.getId(), user.getName(), user.getEmail(), String.valueOf(user.getMobile()), user.getCountry(), user.getUtype().toString());
     }
 
 }

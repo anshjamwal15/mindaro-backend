@@ -15,5 +15,5 @@ public class SessionRequest {
 
     private String gps;
 
-    private String loginType;
+    private String logintype;
 }
