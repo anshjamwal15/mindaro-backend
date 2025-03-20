@@ -25,7 +25,7 @@ public class Otp {
     private UUID userid;
 
     @Column(length = 11, nullable = false)
-    private String otpType;
+    private String otpType; // email or mobile
 
     @Column(length = 20, nullable = false)
     private String countryCodeMobile;
@@ -42,7 +42,7 @@ public class Otp {
     @Column(length = 50, nullable = false)
     private String smsCounter;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(nullable = false)
     private String smsResponse;
 
     @Column(length = 11, nullable = false)
