@@ -73,6 +73,9 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String howtoknow;
 
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean profileCompleted = false;
+
     @ManyToOne
     @JoinColumn(name = "mentor_id")
     private Mentor mentor;

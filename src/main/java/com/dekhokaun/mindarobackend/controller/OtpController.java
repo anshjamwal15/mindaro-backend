@@ -31,9 +31,9 @@ public class OtpController {
         return ResponseEntity.ok(otpService.generateOtp(request));
     }
 
-    @Operation(summary = "Verify an OTP", description = "Verifies the OTP provided by the user")
-    @PostMapping("/verify")
-    public ResponseEntity<OtpResponse> verifyOtp(@RequestBody OtpRequest request) {
-        return ResponseEntity.ok(otpService.verifyOtp(request));
-    }
+//    @Operation(summary = "Verify an OTP", description = "Verifies the OTP provided by the user")
+//    @PostMapping("/verify")
+//    public ResponseEntity<OtpResponse> verifyOtp(@RequestBody OtpRequest request) {
+//        return ResponseEntity.ok(otpService.verifyOtp(request));
+//    }
 }

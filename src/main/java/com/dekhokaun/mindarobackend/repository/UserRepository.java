@@ -26,4 +26,8 @@ public interface UserRepository extends BaseRepository<User> {
     boolean existsByEmail(String email);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByMobile(Long mobile);
+
+    Optional<User> findByEmailOrMobile(String email, Long mobile);
 }

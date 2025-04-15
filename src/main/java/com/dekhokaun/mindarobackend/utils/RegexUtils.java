@@ -19,7 +19,7 @@ public class RegexUtils {
 
     public static boolean isValidUsername(String name) {
 
-        String regex = "^[A-Za-z, ]++$";
+        String regex = "^[A-Za-z ]+$";
 
         Pattern p = Pattern.compile(regex);
 
@@ -53,6 +53,18 @@ public class RegexUtils {
         }
         Integer expectedLength = COUNTRY_PHONE_LENGTHS.get(countryCode.toUpperCase());
         return expectedLength != null && phoneNumber.length() == expectedLength;
+    }
+
+    public static boolean isNumeric(String str) {
+        if (str == null || str.isBlank()) {
+            return false;
+        }
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
 }

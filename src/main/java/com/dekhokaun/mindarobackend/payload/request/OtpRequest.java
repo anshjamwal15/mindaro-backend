@@ -11,10 +11,13 @@ public class OtpRequest {
     private String mobileOrEmail;
 
     @NotBlank
-    private String userid;
+    private String name;
 
-    @NotBlank
-    private String countryCode;
+//    @NotBlank
+//    private String userid;
+//
+//    @NotBlank
+//    private String countryCode;
 
     @NotBlank
     @Pattern(regexp = "email|mobile", message = "otpType must be either 'email' or 'mobile'")
@@ -22,5 +25,4 @@ public class OtpRequest {
 
     private String ip;
 
-    private String otp;
 }
