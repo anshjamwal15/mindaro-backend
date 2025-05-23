@@ -1,0 +1,134 @@
+[2025-05-18 07:48:12] nohup: ignoring input
+[2025-05-18 07:48:14] 
+[2025-05-18 07:48:14]   .   ____          _            __ _ _
+[2025-05-18 07:48:14]  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+[2025-05-18 07:48:14] ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+[2025-05-18 07:48:14]  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+[2025-05-18 07:48:14]   '  |____| .__|_| |_|_| |_\__, | / / / /
+[2025-05-18 07:48:14]  =========|_|==============|___/=/_/_/_/
+[2025-05-18 07:48:14] 
+[2025-05-18 07:48:14]  :: Spring Boot ::                (v3.4.3)
+[2025-05-18 07:48:14] 
+[2025-05-18 07:48:14] 2025-05-18T07:48:14.853Z  INFO 28555 --- [mindaro-backend] [           main] c.d.m.MindaroBackendApplication          : Starting MindaroBackendApplication v0.0.1-SNAPSHOT using Java 17.0.10 with PID 28555 (/home/ec2-user/mindaro-backend/build/libs/mindaro-backend-0.0.1-SNAPSHOT.jar started by ec2-user in /home/ec2-user/mindaro-backend)
+[2025-05-18 07:48:14] 2025-05-18T07:48:14.865Z  INFO 28555 --- [mindaro-backend] [           main] c.d.m.MindaroBackendApplication          : No active profile set, falling back to 1 default profile: "default"
+[2025-05-18 07:48:23] 2025-05-18T07:48:23.906Z  INFO 28555 --- [mindaro-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+[2025-05-18 07:48:24] 2025-05-18T07:48:24.311Z  INFO 28555 --- [mindaro-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 363 ms. Found 12 JPA repository interfaces.
+[2025-05-18 07:48:27] 2025-05-18T07:48:27.567Z  INFO 28555 --- [mindaro-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 3000 (http)
+[2025-05-18 07:48:27] 2025-05-18T07:48:27.592Z  INFO 28555 --- [mindaro-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+[2025-05-18 07:48:27] 2025-05-18T07:48:27.593Z  INFO 28555 --- [mindaro-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+[2025-05-18 07:48:27] 2025-05-18T07:48:27.652Z  INFO 28555 --- [mindaro-backend] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+[2025-05-18 07:48:27] 2025-05-18T07:48:27.654Z  INFO 28555 --- [mindaro-backend] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 12650 ms
+[2025-05-18 07:48:27] 2025-05-18T07:48:27.978Z  INFO 28555 --- [mindaro-backend] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+[2025-05-18 07:48:28] 2025-05-18T07:48:28.178Z  INFO 28555 --- [mindaro-backend] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+[2025-05-18 07:48:28] 2025-05-18T07:48:28.269Z  INFO 28555 --- [mindaro-backend] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+[2025-05-18 07:48:28] 2025-05-18T07:48:28.887Z  INFO 28555 --- [mindaro-backend] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+[2025-05-18 07:48:28] 2025-05-18T07:48:28.940Z  INFO 28555 --- [mindaro-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+[2025-05-18 07:48:29] 2025-05-18T07:48:29.216Z  INFO 28555 --- [mindaro-backend] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@365e65bb
+[2025-05-18 07:48:29] 2025-05-18T07:48:29.221Z  INFO 28555 --- [mindaro-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+[2025-05-18 07:48:30] 2025-05-18T07:48:30.055Z  INFO 28555 --- [mindaro-backend] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+[2025-05-18 07:48:30] 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+[2025-05-18 07:48:30] 	Database driver: undefined/unknown
+[2025-05-18 07:48:30] 	Database version: 10.5.25
+[2025-05-18 07:48:30] 	Autocommit mode: undefined/unknown
+[2025-05-18 07:48:30] 	Isolation level: undefined/unknown
+[2025-05-18 07:48:30] 	Minimum pool size: undefined/unknown
+[2025-05-18 07:48:30] 	Maximum pool size: undefined/unknown
+[2025-05-18 07:48:33] 2025-05-18T07:48:33.189Z  INFO 28555 --- [mindaro-backend] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+[2025-05-18 07:48:33] 2025-05-18T07:48:33.200Z  INFO 28555 --- [mindaro-backend] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+[2025-05-18 07:48:33] 2025-05-18T07:48:33.771Z  INFO 28555 --- [mindaro-backend] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+[2025-05-18 07:48:35] 2025-05-18T07:48:35.070Z  WARN 28555 --- [mindaro-backend] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+[2025-05-18 07:48:38] 2025-05-18T07:48:38.650Z  INFO 28555 --- [mindaro-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 3000 (http) with context path '/'
+[2025-05-18 07:48:38] 2025-05-18T07:48:38.721Z  INFO 28555 --- [mindaro-backend] [           main] c.d.m.MindaroBackendApplication          : Started MindaroBackendApplication in 25.004 seconds (process running for 26.187)
+[2025-05-18 08:12:28] 2025-05-18T08:12:27.555Z  INFO 28555 --- [mindaro-backend] [0.0-3000-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2025-05-18 08:12:28] 2025-05-18T08:12:28.271Z  INFO 28555 --- [mindaro-backend] [0.0-3000-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+[2025-05-18 08:12:30] 2025-05-18T08:12:30.832Z  INFO 28555 --- [mindaro-backend] [0.0-3000-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2538 ms
+[2025-05-18 08:22:05] 2025-05-18T08:21:55.608Z  WARN 28555 --- [mindaro-backend] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3m45s543ms263µs695ns).
+[2025-05-18 08:22:33] 2025-05-18T08:22:33.458Z  WARN 28555 --- [mindaro-backend] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m13s398ms643µs639ns).
+[2025-05-18 08:29:31] 2025-05-18T08:29:31.311Z  WARN 28555 --- [mindaro-backend] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=4m14s350ms519µs825ns).
+[2025-05-18 08:30:56] 2025-05-18T08:30:56.571Z  WARN 28555 --- [mindaro-backend] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=55s260ms9µs168ns).
+[2025-05-18 08:34:21] 2025-05-18T08:34:21.743Z  WARN 28555 --- [mindaro-backend] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m39s590ms640µs648ns).
+[2025-05-18 08:52:42] 2025-05-18T08:52:16.678Z  WARN 28555 --- [mindaro-backend] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=12m37s383ms251µs405ns).
+[2025-05-18 08:54:51] 2025-05-18T08:54:49.609Z  WARN 28555 --- [mindaro-backend] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m50s481ms259µs629ns).
+[2025-05-18 08:56:41] 2025-05-18T08:56:41.840Z  WARN 28555 --- [mindaro-backend] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=50s741ms167µs72ns).
+[2025-05-18 09:11:23] 2025-05-18T09:11:19.454Z  WARN 28555 --- [mindaro-backend] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m7s69ms663µs425ns).
+[2025-05-18 09:33:31] 2025-05-18T09:32:40.841Z  WARN 28555 --- [mindaro-backend] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m17s370ms925µs634ns).
+[2025-05-18 09:33:41] 2025-05-18T09:33:41.161Z  WARN 28555 --- [mindaro-backend] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m31s500ms749µs97ns).
+[2025-05-18 09:42:46] 2025-05-18T09:42:46.655Z  WARN 28555 --- [mindaro-backend] [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m21s682ms57µs67ns).
+[2025-05-18 21:09:31] 2025-05-18T21:09:31.135Z  INFO 28555 --- [mindaro-backend] [0.0-3000-exec-3] o.apache.coyote.http11.Http11Processor   : Error parsing HTTP request header
+[2025-05-18 21:09:31]  Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+[2025-05-18 21:09:31] 
+[2025-05-18 21:09:31] java.lang.IllegalArgumentException: Invalid character found in method name [0x160x030x010x000xf70x010x000x000xf30x030x030x040xee0xcc0x9e~e_A0x04_0x990xd4r+0xefaM0xbd0xd50xfb0x000xb70xbc0xdd8Y0x910x19v0x8bl0xd5 ]. HTTP method names must be tokens
+[2025-05-18 21:09:31] 	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:409) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-18 21:09:31] 	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:270) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-18 21:09:31] 	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-18 21:09:31] 	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-18 21:09:31] 	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1743) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-18 21:09:31] 	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-18 21:09:31] 	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-18 21:09:31] 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-18 21:09:31] 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-18 21:09:31] 	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+[2025-05-18 21:09:31] 
+[2025-05-19 23:40:17] 2025-05-19T23:40:17.328Z  INFO 28555 --- [mindaro-backend] [0.0-3000-exec-3] o.apache.coyote.http11.Http11Processor   : Error parsing HTTP request header
+[2025-05-19 23:40:17]  Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+[2025-05-19 23:40:17] 
+[2025-05-19 23:40:17] java.lang.IllegalArgumentException: Invalid character found in method name [0x160x030x010x010x0a0x010x000x010x060x030x030xeet0x1d[C0xbf0xfe0xbaj90x9e0xbcR0xe80xa50xeb0xd90xdf0xc50xa80xfd0xd90xf30x160xecGZ0xd80xf4j]0x1e ]. HTTP method names must be tokens
+[2025-05-19 23:40:17] 	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:409) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-19 23:40:17] 	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:270) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-19 23:40:17] 	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-19 23:40:17] 	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-19 23:40:17] 	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1743) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-19 23:40:17] 	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-19 23:40:17] 	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-19 23:40:17] 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-19 23:40:17] 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-19 23:40:17] 	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+[2025-05-19 23:40:17] 
+[2025-05-21 01:06:03] 2025-05-21T01:06:03.123Z  INFO 28555 --- [mindaro-backend] [0.0-3000-exec-6] o.apache.coyote.http11.Http11Processor   : Error parsing HTTP request header
+[2025-05-21 01:06:03]  Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+[2025-05-21 01:06:03] 
+[2025-05-21 01:06:03] java.lang.IllegalArgumentException: Invalid character found in method name [SSH-2.0-Go0x0d0x0a...]. HTTP method names must be tokens
+[2025-05-21 01:06:03] 	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:409) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 01:06:03] 	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:270) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 01:06:03] 	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 01:06:03] 	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 01:06:03] 	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1743) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 01:06:03] 	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 01:06:03] 	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 01:06:03] 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 01:06:03] 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 01:06:03] 	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+[2025-05-21 01:06:03] 
+[2025-05-21 07:54:11] 2025-05-21T07:54:11.544Z  INFO 28555 --- [mindaro-backend] [0.0-3000-exec-4] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 26785 ms
+[2025-05-21 14:22:35] 2025-05-21T14:22:35.660Z  INFO 28555 --- [mindaro-backend] [0.0-3000-exec-7] o.apache.coyote.http11.Http11Processor   : Error parsing HTTP request header
+[2025-05-21 14:22:36]  Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+[2025-05-21 14:22:36] 
+[2025-05-21 14:22:36] java.lang.IllegalArgumentException: Invalid character found in method name [0x160x030x010x00{0x010x000x00w0x030x03=e0xb80xd50x150xef0xac0xdd0xd10xbfV0x98/=Y+90xb00xda0xfbl0xde0x9e ]. HTTP method names must be tokens
+[2025-05-21 14:22:36] 	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:409) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 14:22:36] 	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:270) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 14:22:36] 	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 14:22:36] 	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 14:22:36] 	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1743) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 14:22:36] 	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 14:22:36] 	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 14:22:36] 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 14:22:36] 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-21 14:22:36] 	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+[2025-05-21 14:22:36] 
+[2025-05-23 00:45:48] 2025-05-23T00:45:48.424Z  INFO 28555 --- [mindaro-backend] [0.0-3000-exec-9] o.apache.coyote.http11.Http11Processor   : Error parsing HTTP request header
+[2025-05-23 00:45:48]  Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+[2025-05-23 00:45:48] 
+[2025-05-23 00:45:48] java.lang.IllegalArgumentException: Invalid character found in method name [0x160x030x010x000xf20x010x000x000xee0x030x030xb70xed0xa00xa8|0xef0x0d40x17!0xed0xf3f0xc30xf20x00+0xf7o0xdag0xd5Q/20xef0x7f;0xb10x8c0xe80x05 ]. HTTP method names must be tokens
+[2025-05-23 00:45:48] 	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:409) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-23 00:45:48] 	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:270) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-23 00:45:48] 	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-23 00:45:48] 	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-23 00:45:48] 	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1743) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-23 00:45:48] 	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-23 00:45:48] 	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-23 00:45:48] 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-23 00:45:48] 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.36.jar!/:na]
+[2025-05-23 00:45:48] 	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+[2025-05-23 00:45:48] 
+[2025-05-23 06:01:13] 2025-05-23T06:01:13.194Z DEBUG 28555 --- [mindaro-backend] [0.0-3000-exec-5] o.springdoc.api.AbstractOpenApiResource  : Fetching openApi document from cache
+[2025-05-23 06:29:11] 2025-05-23T06:29:11.496Z DEBUG 28555 --- [mindaro-backend] [0.0-3000-exec-5] o.springdoc.api.AbstractOpenApiResource  : Fetching openApi document from cache
