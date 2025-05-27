@@ -105,7 +105,7 @@ public class UserService {
     }
 
     private UserResponse mapToUserResponse(User user) {
-        return new UserResponse(user.getId(), user.getName(), user.getEmail(), String.valueOf(user.getMobile()), user.getCountry(), user.getUtype().toString());
+        return new UserResponse(user.getId(), user.getName(), user.getEmail(), String.valueOf(user.getMobile()), user.getCountry(), user.getUtype().toString(), user.isProfileCompleted());
     }
 
 }

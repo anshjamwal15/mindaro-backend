@@ -14,4 +14,5 @@ public class UserResponse {
     private String mobile;
     private String country;
     private String userType;
+    private boolean isProfileCompleted;
 }
