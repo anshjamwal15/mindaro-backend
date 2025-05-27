@@ -3,6 +3,7 @@ package com.dekhokaun.mindarobackend.service;
 import com.dekhokaun.mindarobackend.exception.InvalidAuthException;
 import com.dekhokaun.mindarobackend.exception.InvalidRequestException;
 import com.dekhokaun.mindarobackend.model.User;
+import com.dekhokaun.mindarobackend.payload.request.UpdateUserRequest;
 import com.dekhokaun.mindarobackend.payload.request.UserRequest;
 import com.dekhokaun.mindarobackend.payload.response.UserResponse;
 import com.dekhokaun.mindarobackend.repository.UserRepository;
@@ -65,21 +66,23 @@ public class UserService {
         return mapToUserResponse(user);
     }
 
-    public UserResponse updateUserProfile(UserRequest request) {
+    public UserResponse updateUserProfile(UpdateUserRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new InvalidRequestException("User not found"));
 
-        if (request.getEmail() != null && RegexUtils.isValidEmail(request.getEmail())) {
+        /*
+           if (request.getEmail() != null && RegexUtils.isValidEmail(request.getEmail())) {
             user.setEmail(request.getEmail());
-        }
+           }
+        */
 
         if (request.getName() != null && RegexUtils.isValidUsername(request.getName())) {
             user.setName(request.getName());
         }
 
-        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+        /* if (request.getPassword() != null && !request.getPassword().isBlank()) {
             user.setPwd(passwordEncoder.encode(request.getPassword()));
-        }
+        } */
 
         if (request.getMobile() != null && RegexUtils.isValidPhoneNumber(request.getMobile(), "IN")) {
             user.setMobile(Long.valueOf(request.getMobile()));
@@ -88,6 +91,8 @@ public class UserService {
         if (request.getCountry() != null) {
             user.setCountry(request.getCountry());
         }
+        user.setProfileCompleted(true);
+
         userRepository.save(user);
         return mapToUserResponse(user);
     }

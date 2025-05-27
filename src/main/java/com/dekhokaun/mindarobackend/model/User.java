@@ -45,8 +45,10 @@ public class User {
 
     private Long mobile;
 
-    @Column(length = 5)
     private String country;
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean isProfileCompleted = false;
 
     @Column(columnDefinition = "TINYTEXT")
     private String pwd;

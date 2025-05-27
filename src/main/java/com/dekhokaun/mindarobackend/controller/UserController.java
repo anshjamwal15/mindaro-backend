@@ -1,5 +1,6 @@
 package com.dekhokaun.mindarobackend.controller;
 
+import com.dekhokaun.mindarobackend.payload.request.UpdateUserRequest;
 import com.dekhokaun.mindarobackend.payload.request.UserRequest;
 import com.dekhokaun.mindarobackend.payload.response.UserResponse;
 import com.dekhokaun.mindarobackend.service.UserService;
@@ -28,8 +29,8 @@ public class UserController {
     }
 
     @Operation(summary = "Update user profile", description = "Updates the existing user profile")
-    @PostMapping("/update")
-    public ResponseEntity<UserResponse> updateUserProfile(@RequestBody UserRequest request) {
+    @PutMapping("/update")
+    public ResponseEntity<UserResponse> updateUserProfile(@RequestBody UpdateUserRequest request) {
         return ResponseEntity.ok(userService.updateUserProfile(request));
     }
 
