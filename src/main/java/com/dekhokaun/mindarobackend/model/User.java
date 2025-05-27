@@ -37,20 +37,20 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String mentorfbid;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private Long mobile;
 
     private String country;
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
-    private boolean isProfileCompleted = false;
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isProfileCompleted = false;
 
-    @Column(columnDefinition = "TINYTEXT")
     private String pwd;
 
     @Column(length = 11)
