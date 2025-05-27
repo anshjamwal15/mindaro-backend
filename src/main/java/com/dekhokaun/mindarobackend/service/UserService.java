@@ -91,7 +91,7 @@ public class UserService {
         if (request.getCountry() != null) {
             user.setCountry(request.getCountry());
         }
-        user.setProfileCompleted(true);
+        user.setIsProfileCompleted(true);
 
         userRepository.save(user);
         return mapToUserResponse(user);
@@ -105,7 +105,7 @@ public class UserService {
     }
 
     private UserResponse mapToUserResponse(User user) {
-        return new UserResponse(user.getId(), user.getName(), user.getEmail(), String.valueOf(user.getMobile()), user.getCountry(), user.getUtype().toString(), user.isProfileCompleted());
+        return new UserResponse(user.getId(), user.getName(), user.getEmail(), String.valueOf(user.getMobile()), user.getCountry(), user.getUtype().toString(), user.getIsProfileCompleted());
     }
 
 }
