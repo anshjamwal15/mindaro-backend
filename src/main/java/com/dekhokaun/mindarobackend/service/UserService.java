@@ -3,6 +3,7 @@ package com.dekhokaun.mindarobackend.service;
 import com.dekhokaun.mindarobackend.exception.InvalidAuthException;
 import com.dekhokaun.mindarobackend.exception.InvalidRequestException;
 import com.dekhokaun.mindarobackend.model.User;
+import com.dekhokaun.mindarobackend.model.UserType;
 import com.dekhokaun.mindarobackend.payload.request.UpdateUserRequest;
 import com.dekhokaun.mindarobackend.payload.request.UserRequest;
 import com.dekhokaun.mindarobackend.payload.response.UserResponse;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -107,5 +109,24 @@ public class UserService {
     private UserResponse mapToUserResponse(User user) {
         return new UserResponse(user.getId(), user.getName(), user.getEmail(), String.valueOf(user.getMobile()), user.getCountry(), user.getUtype().toString(), user.getIsProfileCompleted());
     }
+
+    public void createTestUser() {
+        User testUser = new User();
+        testUser.setName("Test User");
+        testUser.setEmail("testuser@example.com");
+        testUser.setMobile(9876543210L);
+        testUser.setCountry("IN");
+        testUser.setPwd(passwordEncoder.encode("test123"));
+        testUser.setUtype(UserType.CUSTOMER);
+        testUser.setIsProfileCompleted(false);
+        testUser.setStatus("active");
+        testUser.setToken("test_token_123");
+        testUser.setHowtoknow("Through Testing");
+        testUser.setRating(BigDecimal.valueOf(4.5));
+        testUser.setRatingcount(10);
+
+        userRepository.save(testUser);
+    }
+
 
 }

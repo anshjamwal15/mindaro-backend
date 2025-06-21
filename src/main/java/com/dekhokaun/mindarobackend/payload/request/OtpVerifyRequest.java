@@ -1,10 +1,11 @@
 package com.dekhokaun.mindarobackend.payload.request;
 
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class OtpRequest {
+public class OtpVerifyRequest {
 
     @NotBlank
     private String mobileOrEmail;
@@ -16,9 +17,8 @@ public class OtpRequest {
     private String countryCode;
 
     @NotBlank
-    private String otpType; // email or phone
+    private String otpType;
 
-    private String ip;
-
+    @NotBlank
     private String otp;
 }

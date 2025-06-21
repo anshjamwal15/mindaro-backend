@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,9 +20,11 @@ import java.util.UUID;
 public class Otp {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JdbcTypeCode(SqlTypes.BINARY)
     @Column(columnDefinition = "BINARY(16)", unique = true, nullable = false)
     private UUID id;
 
+    @JdbcTypeCode(SqlTypes.BINARY)
     @Column(columnDefinition = "BINARY(16)", nullable = false)
     private UUID userid;
 

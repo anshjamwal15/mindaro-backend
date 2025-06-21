@@ -1,10 +1,12 @@
 package com.dekhokaun.mindarobackend.service;
 
+import com.dekhokaun.mindarobackend.exception.InternalServerException;
 import com.dekhokaun.mindarobackend.exception.InvalidRequestException;
-import com.dekhokaun.mindarobackend.exception.ResourceNotFoundException;
+import com.dekhokaun.mindarobackend.exception.ServiceUnavailableException;
 import com.dekhokaun.mindarobackend.model.Otp;
 import com.dekhokaun.mindarobackend.model.User;
-import com.dekhokaun.mindarobackend.payload.request.OtpRequest;
+import com.dekhokaun.mindarobackend.payload.request.OtpSendRequest;
+import com.dekhokaun.mindarobackend.payload.request.OtpVerifyRequest;
 import com.dekhokaun.mindarobackend.payload.response.OtpResponse;
 import com.dekhokaun.mindarobackend.repository.OtpRepository;
 import com.dekhokaun.mindarobackend.repository.UserRepository;
@@ -14,66 +16,68 @@ import org.springframework.stereotype.Service;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
 public class OtpService {
-
-    private static final int OTP_LENGTH = 6;
-    private static final int OTP_EXPIRATION_MINUTES = 5;
     private static final SecureRandom random = new SecureRandom();
 
     private final OtpRepository otpRepository;
 
     private final UserRepository userRepository;
 
-    public OtpResponse generateOtp(OtpRequest request) {
-        int otp = 100000 + random.nextInt(999999);
+    public OtpResponse generateOtp(OtpSendRequest request) {
+        int otp = 100000 + random.nextInt(900000);
+        boolean isMobile = request.getMobileOrEmail() != null &&
+                "mobile".equalsIgnoreCase(request.getOtpType());
         String otpMessage = String.format("Your OTP is %s. It is valid for a 10 minutes only.", otp);
 
-        User user = userRepository.findById(UUID.fromString(request.getUserid()))
+        UUID userId = UUID.fromString(request.getUserid());
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidRequestException("User not found with ID: " + request.getUserid()));
 
-        otpRepository.deleteByUseridAndMobileAndOtpType(user.getId(), request.getMobileOrEmail(), request.getOtpType());
+        otpRepository.deleteByUseridAndMobileAndOtpType(userId, request.getMobileOrEmail(), request.getOtpType());
 
         Otp otpEntity = new Otp();
-        otpEntity.setUserid(user.getId());
+        otpEntity.setUserid(userId);
         otpEntity.setOtpType(request.getOtpType());
-
-        if (request.getOtpType().equalsIgnoreCase("mobile")) {
-            // sms service function
-        } else if (request.getOtpType().equalsIgnoreCase("email")) {
-            // email service function
-        }
-
         otpEntity.setCountryCodeMobile(request.getCountryCode());
-        otpEntity.setMobile(request.getMobileOrEmail());
         otpEntity.setOtp(String.valueOf(otp));
-
-        if (!request.getIp().isBlank()) {
-            otpEntity.setIp(request.getIp());
-        }
-
-        // TODO: counter use case discuss
         otpEntity.setSmsCounter("0");
-
-        // TODO: add sms response from sms service
         otpEntity.setSmsResponse(otpMessage);
         otpEntity.setSmsapi("example_api");
         otpEntity.setStatus("PENDING");
+
+        if (request.getIp() != null && !request.getIp().isBlank()) {
+            otpEntity.setIp(request.getIp());
+        }
+
+        try {
+            if (isMobile) {
+                otpEntity.setMobile(request.getMobileOrEmail());
+                sendSmsRequest(request.getMobileOrEmail(), user.getName(), String.valueOf(otp));
+            } else {
+                sendEmailRequest(request.getMobileOrEmail(), String.valueOf(otp));
+            }
+        } catch (IOException e) {
+            throw new InternalServerException(
+                    String.format("Unable to send OTP on %s, Please try again later", request.getMobileOrEmail())
+            );
+        }
 
         otpRepository.save(otpEntity);
         return new OtpResponse(otpMessage);
     }
 
-    public OtpResponse verifyOtp(OtpRequest request) {
+
+    public OtpResponse verifyOtp(OtpVerifyRequest request) {
         if (request.getOtp() == null || request.getOtp().isEmpty()) {
             return new OtpResponse("OTP is required!");
         }
@@ -93,46 +97,55 @@ public class OtpService {
     }
 
 
-    private int sendSmsRequest(String mobileNumber, String username, String otp) throws IOException {
+    private void sendSmsRequest(String mobileNumber, String username, String otp) throws IOException {
         String apiUrl = "https://we8.in/smsapi/smsapi.php";
 
-        String jsonPayload = String.format("""
-        {
-            "api1": "otp",
-            "data1": {
-                "usercode": "advijr",
-                "smsuser": "%s",
-                "smskey": "Ymjsd5h7@3",
-                "mobiles": "%s",
-                "message": "OTP for login is %s, valid for 10 minutes. -Serviced by Mindaro",
-                "senderid": "MINDRO",
-                "entityid": "1501544040000010555",
-                "tempid": "1107172551760125165",
-                "v1": "stage_of_sending_sms",
-                "v2": "user_id_reference",
-                "v3": "any_value",
-                "v4": "any_value",
-                "v5": "datetimesent"
-            },
-            "chksum1": "chksum"
-        }
+        String data1Json = String.format("""
+            {
+                "usercode":"advijr",
+                "smsuser":"%s",
+                "smskey":"Ymjsd5h7@3",
+                "mobiles":"%s",
+                "message":"OTP for login is %s, valid for 10 minutes. -Serviced by Mindaro",
+                "senderid":"MINDRO",
+                "entityid":"1501544040000010555",
+                "tempid":"1107172551760125165",
+                "v1":"stage_of_sending_sms",
+                "v2":"user_id_reference",
+                "v3":"any_value",
+                "v4":"any_value",
+                "v5":"datetimesent"
+            }
         """, username, mobileNumber, otp);
 
+        // URL encode each part
+        String encodedApi1 = "api1=" + URLEncoder.encode("otp", StandardCharsets.UTF_8);
+        String encodedData1 = "data1=" + URLEncoder.encode(data1Json, StandardCharsets.UTF_8);
+        String encodedChksum1 = "chksum1=" + URLEncoder.encode("chksum", StandardCharsets.UTF_8);
+
+        String formParams = String.join("&", encodedApi1, encodedData1, encodedChksum1);
+
+        int responseCode = getResponseCode(apiUrl, formParams);
+        System.out.println("Response Code: " + responseCode);
+    }
+
+    private static int getResponseCode(String apiUrl, String formParams) throws IOException {
         URL url = new URL(apiUrl);
-        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();z
 
         conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json; utf-8");
-        conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         conn.setDoOutput(true);
 
         try (OutputStream os = conn.getOutputStream()) {
-            byte[] input = jsonPayload.getBytes(StandardCharsets.UTF_8);
+            byte[] input = formParams.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
 
-        int responseCode = conn.getResponseCode();
-        System.out.println("Response Code: " + responseCode);
-        return responseCode;
+        return conn.getResponseCode();
+    }
+
+    private void sendEmailRequest(String email, String otp) {
+        throw new ServiceUnavailableException("Email OTP service is temporarily unavailable", "Please try using mobile OTP or contact support");
     }
 }
