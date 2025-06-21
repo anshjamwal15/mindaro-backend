@@ -131,8 +131,7 @@ public class OtpService {
 
     private static int getResponseCode(String apiUrl, String formParams) throws IOException {
         URL url = new URL(apiUrl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();z
-
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         conn.setDoOutput(true);
