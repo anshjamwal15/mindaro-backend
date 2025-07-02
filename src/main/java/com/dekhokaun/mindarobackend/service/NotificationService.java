@@ -69,7 +69,7 @@ public class NotificationService {
                     .putAllData(data)
                     .build();
 
-            BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
+            BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
             log.info("Successfully sent multicast notification: {} successful, {} failed",
                     response.getSuccessCount(), response.getFailureCount());
         } catch (FirebaseMessagingException e) {
@@ -119,7 +119,8 @@ public class NotificationService {
         data.put("type", "call");
         data.put("callType", callType.getValue());
         data.put("title", "Incoming Call");
-        data.put("body", String.format("%s is trying to %s call you", request.getUserName(), "video".equalsIgnoreCase(callType.getValue()) ? "video" : "voice"));
+        data.put("body", String.format("%s is trying to %s call you", request.getUserName(),
+                "video".equalsIgnoreCase(callType.getValue()) ? "video" : "voice"));
         data.put("roomId", request.getRoomId());
         data.put("creatorId", request.getCreatorId());
         data.put("calleeId", request.getUserId());
@@ -130,4 +131,4 @@ public class NotificationService {
 
         return payload;
     }
-} 
+}
