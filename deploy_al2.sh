@@ -78,27 +78,27 @@ EOF
 sudo sysctl -p
 
 # Install required packages
-print_status "Installing required packages..."
-sudo yum update -y
-sudo yum install -y java-17-amazon-corretto mariadb105-server mariadb105
+# print_status "Installing required packages..."
+# sudo yum update -y
+# sudo yum install -y java-17-amazon-corretto mariadb105-server mariadb105
 
 # Start and enable MariaDB
-print_status "Starting MariaDB service..."
-sudo systemctl start mariadb
-sudo systemctl enable mariadb
-
-# Secure MariaDB installation
-print_status "Securing MariaDB installation..."
-sudo mysql_secure_installation
-
-# Create database and user
-print_status "Setting up database..."
-sudo mysql -u root -p -e "
-CREATE DATABASE IF NOT EXISTS test_advj;
-CREATE USER IF NOT EXISTS 'mindaro_user'@'localhost' IDENTIFIED BY 'awsEE78';
-GRANT ALL PRIVILEGES ON test_advj.* TO 'mindaro_user'@'localhost';
-FLUSH PRIVILEGES;
-"
+# print_status "Starting MariaDB service..."
+# sudo systemctl start mariadb
+# sudo systemctl enable mariadb
+# 
+# # Secure MariaDB installation
+# print_status "Securing MariaDB installation..."
+# sudo mysql_secure_installation
+# 
+# # Create database and user
+# print_status "Setting up database..."
+# sudo mysql -u root -p -e "
+# CREATE DATABASE IF NOT EXISTS test_advj;
+# CREATE USER IF NOT EXISTS 'mindaro_user'@'localhost' IDENTIFIED BY 'awsEE78';
+# GRANT ALL PRIVILEGES ON test_advj.* TO 'mindaro_user'@'localhost';
+# FLUSH PRIVILEGES;
+# "
 
 # Build the application
 print_status "Building the application..."
@@ -113,7 +113,7 @@ sudo cp mindaro-backend.service /etc/systemd/system/
 sudo systemctl daemon-reload
 
 # Set proper permissions
-sudo chown -R ec2-user:ec2-user /home/aimbot/devhub/mindaro/working/mindaro-backend
+sudo chown -R ec2-user:ec2-user /home/ec2-user/mindaro-backend
 
 # Create production profile
 print_status "Creating production profile..."
@@ -127,7 +127,7 @@ spring.jvm.memory=-Xms512m -Xmx1536m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+
 # Database Configuration
 spring.datasource.url=jdbc:mariadb://localhost:3306/test_advj
 spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
-spring.datasource.username=mindaro_user
+spring.datasource.username=root
 spring.datasource.password=awsEE78
 
 # Database Connection Pool Optimization for 2GB RAM
