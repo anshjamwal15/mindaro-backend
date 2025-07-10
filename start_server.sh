@@ -81,7 +81,8 @@ fi
 app_logfile="logs/app_log_$timestamp.log"
 
 echo "🚀 Starting the application..."
-JAVA_OPTS="-Xms64m -Xmx128m -XX:+UseG1GC"
+# JVM options optimized for Amazon Linux 2 with 2GB RAM
+JAVA_OPTS="-Xms512m -Xmx1536m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseStringDeduplication -XX:+OptimizeStringConcat -XX:+UseCompressedOops -XX:+UseCompressedClassPointers -Djava.awt.headless=true -Dfile.encoding=UTF-8"
 nohup java $JAVA_OPTS -jar build/libs/*.jar 2>&1 | awk '{ print strftime("[%Y-%m-%d %H:%M:%S]"), $0; fflush(); }' >> "$app_logfile" &
 APP_PID=$!
 
