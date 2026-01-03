@@ -1,5 +1,6 @@
 package com.dekhokaun.mindarobackend.service;
 
+import com.dekhokaun.mindarobackend.exception.InvalidRequestException;
 import com.dekhokaun.mindarobackend.model.Slider;
 import com.dekhokaun.mindarobackend.payload.request.SliderRequest;
 import com.dekhokaun.mindarobackend.payload.response.SliderResponse;
@@ -23,29 +24,43 @@ public class SliderService {
     public SliderResponse addSlider(SliderRequest request) {
         Slider slider = ObjectMapperUtils.map(request, Slider.class);
         sliderRepository.save(slider);
-        return ObjectMapperUtils.map(slider, SliderResponse.class);
+        return mapToResponse(slider);
     }
 
     public List<SliderResponse> getAllSliders() {
         return sliderRepository.findAll().stream()
-                .map(slider -> ObjectMapperUtils.map(slider, SliderResponse.class))
+                .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    public SliderResponse getSliderById(String id) {
+        Slider slider = sliderRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new InvalidRequestException("Slider not found"));
+        return mapToResponse(slider);
     }
 
     public void deleteSlider(String id) {
         sliderRepository.deleteById(UUID.fromString(id));
     }
 
-    public SliderResponse updateSlider(SliderRequest request) {
-//        Slider slider = sliderRepository.findById(request.ge())
-//                .orElseThrow(() -> new InvalidRequestException("Slider not found"));
-//
-//        slider.setTitle(request.getTitle());
-//        slider.setImageUrl(request.getImageUrl());
-//
-//        sliderRepository.save(slider);
-//
-//        return new SliderResponse(slider.getId(), slider.getTitle(), slider.getImageUrl());
-        return new SliderResponse();
+    public SliderResponse updateSlider(String id, SliderRequest request) {
+        Slider slider = sliderRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new InvalidRequestException("Slider not found"));
+
+        slider.setImagename(request.getImageUrl());
+        slider.setAction(request.getTitle());
+        slider.setLink(request.getDescription());
+
+        Slider updated = sliderRepository.save(slider);
+        return mapToResponse(updated);
+    }
+
+    private SliderResponse mapToResponse(Slider slider) {
+        SliderResponse response = new SliderResponse();
+        response.setId(slider.getId() != null ? slider.getId().toString() : null);
+        response.setImageUrl(slider.getImagename());
+        response.setTitle(slider.getAction());
+        response.setDescription(slider.getLink());
+        return response;
     }
 }

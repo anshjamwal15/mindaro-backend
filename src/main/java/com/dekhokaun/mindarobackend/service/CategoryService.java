@@ -42,7 +42,7 @@ public class CategoryService {
         Category category = categoryRepository.findByName(name)
                 .orElseThrow(() -> new InvalidRequestException("Category not found"));
 
-        category.setName(request.getDescription());
+        category.setName(request.getName());
         categoryRepository.save(category);
         return ObjectMapperUtils.map(category, CategoryResponse.class);
     }
