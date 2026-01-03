@@ -41,4 +41,11 @@ public class UserController {
         UserResponse response = ObjectMapperUtils.map(userService.getUserByEmail(email), UserResponse.class);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "Delete a user", description = "Deletes a user by id (Admin only)")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }
