@@ -82,7 +82,22 @@ app_logfile="logs/app_log_$timestamp.log"
 
 echo "🚀 Starting the application..."
 JAVA_OPTS="-Xms64m -Xmx128m -XX:+UseG1GC"
-nohup java $JAVA_OPTS -jar build/libs/*.jar 2>&1 | awk '{ print strftime("[%Y-%m-%d %H:%M:%S]"), $0; fflush(); }' >> "$app_logfile" &
+if command -v gawk >/dev/null 2>&1; then
+  awk_bin="gawk"
+  awk_script='{
+    print strftime("[%Y-%m-%d %H:%M:%S]"), $0;
+    fflush();
+  }'
+else
+  awk_bin="awk"
+  awk_script='{
+    "date \"+[%Y-%m-%d %H:%M:%S]\"" | getline ts;
+    close("date \"+[%Y-%m-%d %H:%M:%S]\"");
+    print ts, $0;
+    fflush();
+  }'
+fi
+nohup java $JAVA_OPTS -jar build/libs/*.jar 2>&1 | "$awk_bin" "$awk_script" >> "$app_logfile" &
 APP_PID=$!
 
 sleep 2
@@ -95,4 +110,3 @@ echo "📌 To follow build logs: tail -f $logfile"
 echo "📌 To follow app logs:   tail -f $app_logfile"
 echo "🛑 To stop the app, run: kill $APP_PID"
 echo "======================================"
-
