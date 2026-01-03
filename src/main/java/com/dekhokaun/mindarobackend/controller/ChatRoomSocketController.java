@@ -7,7 +7,7 @@ import com.dekhokaun.mindarobackend.payload.response.ChatRoomResponse;
 import com.dekhokaun.mindarobackend.service.ChatRoomService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
