@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,6 +42,18 @@ public class MentorService {
     public MentorResponse addMentor(MentorRequest request) {
         Mentor mentor = ObjectMapperUtils.map(request, Mentor.class);
         mentorRepository.save(mentor);
+        return ObjectMapperUtils.map(mentor, MentorResponse.class);
+    }
+
+    public List<MentorResponse> getMentors() {
+        return mentorRepository.findAll().stream()
+                .map(mentor -> ObjectMapperUtils.map(mentor, MentorResponse.class))
+                .toList();
+    }
+
+    public MentorResponse getMentorById(String id) {
+        Mentor mentor = mentorRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new ResourceNotFoundException("Mentor not found with id: " + id));
         return ObjectMapperUtils.map(mentor, MentorResponse.class);
     }
 
@@ -67,6 +80,18 @@ public class MentorService {
         Mentor mentor = mentorRepository.findByName(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Mentor not found with name: " + name));
         return ObjectMapperUtils.map(mentor, MentorResponse.class);
+    }
+
+    public MentorResponse updateMentor(String id, MentorRequest request) {
+        Mentor mentor = mentorRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new ResourceNotFoundException("Mentor not found with id: " + id));
+
+        mentor.setName(request.getName());
+        mentor.setTotalexpyrs(request.getExperience());
+        mentor.setRating(request.getRating());
+
+        Mentor updated = mentorRepository.save(mentor);
+        return ObjectMapperUtils.map(updated, MentorResponse.class);
     }
 
     /**
