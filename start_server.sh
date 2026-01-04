@@ -97,7 +97,12 @@ else
     fflush();
   }'
 fi
-nohup java $JAVA_OPTS -jar build/libs/*.jar 2>&1 | "$awk_bin" "$awk_script" >> "$app_logfile" &
+boot_jar=$(ls -1t build/libs/*.jar 2>/dev/null | awk '!/-plain\.jar$/ {print; exit}')
+if [ -z "$boot_jar" ]; then
+  echo "❌ No runnable Spring Boot jar found in build/libs (expected non-plain jar)."
+  exit 1
+fi
+nohup java $JAVA_OPTS -jar "$boot_jar" 2>&1 | "$awk_bin" "$awk_script" >> "$app_logfile" &
 APP_PID=$!
 
 sleep 2
