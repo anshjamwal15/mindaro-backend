@@ -21,4 +21,13 @@ public class CreateUserRequest {
 
     @NotBlank
     private String country;
+
+    /** Optional: ADMIN | CUSTOMER | MENTOR (dashboard sends this as utype) */
+    private String utype;
+
+    /** Optional: ACTIVE | INACTIVE */
+    private String status;
+
+    /** Optional: dashboard field name */
+    private Boolean is_profile_completed;
 }

@@ -1,6 +1,7 @@
 package com.dekhokaun.mindarobackend.controller;
 
 import com.dekhokaun.mindarobackend.payload.request.MentorRequest;
+import com.dekhokaun.mindarobackend.payload.request.MentorUpdateRequest;
 import com.dekhokaun.mindarobackend.payload.response.MentorResponse;
 import com.dekhokaun.mindarobackend.service.MentorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +38,7 @@ public class MentorController {
 
     @Operation(summary = "Get mentor by id", description = "Retrieves mentor details by id")
     @GetMapping("/{id}")
-    public ResponseEntity<MentorResponse> getMentor(@PathVariable String id) {
+    public ResponseEntity<MentorResponse> getMentor(@PathVariable Integer id) {
         return ResponseEntity.ok(mentorService.getMentorById(id));
     }
 
@@ -51,7 +52,7 @@ public class MentorController {
 
     @Operation(summary = "Update a mentor", description = "Updates mentor details (Admin only)")
     @PutMapping("/{id}")
-    public ResponseEntity<MentorResponse> updateMentor(@PathVariable String id, @Valid @RequestBody MentorRequest request) {
+    public ResponseEntity<MentorResponse> updateMentor(@PathVariable Integer id, @RequestBody MentorUpdateRequest request) {
         return ResponseEntity.ok(mentorService.updateMentor(id, request));
     }
 }

@@ -12,6 +12,7 @@ import java.util.Set;
 @Repository
 public interface MentorRepository extends BaseRepository<Mentor> {
     Optional<Mentor> findByName(String name);
+    Optional<Mentor> findByUmid(Integer umid);
 //    Page<Mentor> findByCategoriesContains(Category category, Pageable pageable);
     Page<Mentor> findByCategoriesContainingAndMainlanguage(Set<Category> categories, String mainlanguage, Pageable pageable);
 }

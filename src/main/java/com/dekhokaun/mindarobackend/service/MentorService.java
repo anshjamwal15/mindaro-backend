@@ -7,12 +7,12 @@ import com.dekhokaun.mindarobackend.model.Mentor;
 import com.dekhokaun.mindarobackend.model.Rating;
 import com.dekhokaun.mindarobackend.model.User;
 import com.dekhokaun.mindarobackend.payload.request.MentorRequest;
+import com.dekhokaun.mindarobackend.payload.request.MentorUpdateRequest;
 import com.dekhokaun.mindarobackend.payload.response.MentorResponse;
 import com.dekhokaun.mindarobackend.repository.CategoryRepository;
 import com.dekhokaun.mindarobackend.repository.MentorRepository;
 import com.dekhokaun.mindarobackend.repository.RatingRepository;
 import com.dekhokaun.mindarobackend.repository.UserRepository;
-import com.dekhokaun.mindarobackend.utils.ObjectMapperUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,21 +40,32 @@ public class MentorService {
      * Add a new mentor
      */
     public MentorResponse addMentor(MentorRequest request) {
-        Mentor mentor = ObjectMapperUtils.map(request, Mentor.class);
-        mentorRepository.save(mentor);
-        return ObjectMapperUtils.map(mentor, MentorResponse.class);
+        // NOTE: This endpoint isn't used by the admin-dashboard, but we keep it working.
+        Mentor mentor = new Mentor();
+        mentor.setName(request.getName());
+        mentor.setTotalexpyrs(request.getExperience());
+        mentor.setRating(request.getRating());
+
+        // Best-effort mapping for legacy field "category" -> categories
+        if (request.getCategory() != null && !request.getCategory().isBlank()) {
+            categoryRepository.findByName(request.getCategory())
+                    .ifPresent(cat -> mentor.setCategories(Set.of(cat)));
+        }
+
+        Mentor saved = mentorRepository.save(mentor);
+        return toContract(saved);
     }
 
     public List<MentorResponse> getMentors() {
         return mentorRepository.findAll().stream()
-                .map(mentor -> ObjectMapperUtils.map(mentor, MentorResponse.class))
+                .map(this::toContract)
                 .toList();
     }
 
-    public MentorResponse getMentorById(String id) {
-        Mentor mentor = mentorRepository.findById(UUID.fromString(id))
+    public MentorResponse getMentorById(Integer id) {
+        Mentor mentor = mentorRepository.findByUmid(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Mentor not found with id: " + id));
-        return ObjectMapperUtils.map(mentor, MentorResponse.class);
+        return toContract(mentor);
     }
 
     /**
@@ -70,7 +81,7 @@ public class MentorService {
 
         Page<Mentor> mentorPage = mentorRepository.findByCategoriesContainingAndMainlanguage(categories, language, pageable);
 
-        return mentorPage.map(mentor -> ObjectMapperUtils.map(mentor, MentorResponse.class));
+        return mentorPage.map(this::toContract);
     }
 
     /**
@@ -79,19 +90,72 @@ public class MentorService {
     public MentorResponse getMentorDetails(String name) {
         Mentor mentor = mentorRepository.findByName(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Mentor not found with name: " + name));
-        return ObjectMapperUtils.map(mentor, MentorResponse.class);
+        return toContract(mentor);
     }
 
-    public MentorResponse updateMentor(String id, MentorRequest request) {
-        Mentor mentor = mentorRepository.findById(UUID.fromString(id))
+    public MentorResponse updateMentor(Integer id, MentorUpdateRequest request) {
+        Mentor mentor = mentorRepository.findByUmid(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Mentor not found with id: " + id));
 
-        mentor.setName(request.getName());
-        mentor.setTotalexpyrs(request.getExperience());
-        mentor.setRating(request.getRating());
+        if (request.getName() != null) mentor.setName(request.getName());
+        if (request.getEmail() != null) mentor.setEmail(request.getEmail());
+        if (request.getMobile() != null) {
+            try {
+                mentor.setMobile(Long.parseLong(request.getMobile().trim()));
+            } catch (NumberFormatException ignored) {
+                // Keep existing mobile if parsing fails
+            }
+        }
+        if (request.getCountry() != null) mentor.setCountry(request.getCountry());
+        if (request.getAbout() != null) mentor.setPlatforminfo(request.getAbout());
+        if (request.getRating() != null) mentor.setRating(request.getRating());
+        if (request.getRatingCount() != null) mentor.setRatingCount(request.getRatingCount());
+
+        if (request.getStatus() != null) {
+            String s = request.getStatus().trim().toUpperCase();
+            if ("ACTIVE".equals(s)) mentor.setStatus(com.dekhokaun.mindarobackend.model.MentorStatus.ACTIVE);
+            if ("INACTIVE".equals(s)) mentor.setStatus(com.dekhokaun.mindarobackend.model.MentorStatus.INACTIVE);
+        }
+
+        if (request.getExpertise() != null) {
+            Set<Category> cats = request.getExpertise().stream()
+                    .filter(n -> n != null && !n.isBlank())
+                    .map(String::trim)
+                    .map(categoryRepository::findByName)
+                    .flatMap(java.util.Optional::stream)
+                    .collect(java.util.stream.Collectors.toSet());
+            mentor.setCategories(cats);
+        }
 
         Mentor updated = mentorRepository.save(mentor);
-        return ObjectMapperUtils.map(updated, MentorResponse.class);
+        return toContract(updated);
+    }
+
+    private MentorResponse toContract(Mentor mentor) {
+        MentorResponse res = new MentorResponse();
+        res.setId(mentor.getUmid() != null ? mentor.getUmid() : 0);
+        res.setName(mentor.getName());
+        res.setEmail(mentor.getEmail());
+        res.setMobile(mentor.getMobile() != null ? String.valueOf(mentor.getMobile()) : null);
+        res.setCountry(mentor.getCountry());
+
+        // Dashboard expects only ACTIVE/INACTIVE
+        String status = "INACTIVE";
+        if (mentor.getStatus() != null && mentor.getStatus() == com.dekhokaun.mindarobackend.model.MentorStatus.ACTIVE) {
+            status = "ACTIVE";
+        }
+        res.setStatus(status);
+
+        res.setAbout(mentor.getPlatforminfo());
+        res.setExpertise(mentor.getCategories() == null ? List.of() : mentor.getCategories().stream()
+                .map(Category::getName)
+                .filter(n -> n != null && !n.isBlank())
+                .toList());
+
+        res.setRating(mentor.getRating());
+        res.setRatingCount(mentor.getRatingCount());
+        res.setCreatedAt(mentor.getCreatedAt() != null ? mentor.getCreatedAt().toString() : null);
+        return res;
     }
 
     /**
