@@ -11,8 +11,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-package com.dekhokaun.mindarobackend.controller;
-
 import com.dekhokaun.mindarobackend.payload.request.LoginRequest;
 import com.dekhokaun.mindarobackend.payload.request.UpdateUserRequest;
 import com.dekhokaun.mindarobackend.payload.request.UserRequest;
