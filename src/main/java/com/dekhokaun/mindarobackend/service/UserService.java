@@ -61,6 +61,23 @@ public class UserService {
 
         return mapToUserResponse(newUser);
     }
+    @Transactional
+    public UserResponse login(String email, String password, String method, String token) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new InvalidAuthException("User not found with this email"));
+
+        if ("google".equalsIgnoreCase(method)) {
+            if (token == null || !token.equals(user.getToken())) {
+                throw new InvalidAuthException("Invalid Google authentication token");
+            }
+        } else {
+            if (password == null || !passwordEncoder.matches(password, user.getPwd())) {
+                throw new InvalidAuthException("Invalid password");
+            }
+        }
+
+        return mapToUserResponse(user);
+    }
 
     public UserResponse getUserProfile(String email) {
         User user = userRepository.findByEmail(email)

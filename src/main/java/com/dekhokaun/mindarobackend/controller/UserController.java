@@ -11,6 +11,20 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+package com.dekhokaun.mindarobackend.controller;
+
+import com.dekhokaun.mindarobackend.payload.request.LoginRequest;
+import com.dekhokaun.mindarobackend.payload.request.UpdateUserRequest;
+import com.dekhokaun.mindarobackend.payload.request.UserRequest;
+import com.dekhokaun.mindarobackend.payload.response.UserResponse;
+import com.dekhokaun.mindarobackend.service.UserService;
+import com.dekhokaun.mindarobackend.utils.ObjectMapperUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/api/user")
 @Tag(name = "User Controller", description = "APIs for managing users")
@@ -20,6 +34,17 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @Operation(summary = "Login user", description = "Authenticates an existing user with email and password or Google token")
+    @PostMapping("/login")
+    public ResponseEntity<UserResponse> loginUser(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(userService.login(
+                request.getEmail(),
+                request.getPassword(),
+                request.getMethod(),
+                request.getToken()
+        ));
     }
 
     @Operation(summary = "Create a new user", description = "Registers a new user in the system")
