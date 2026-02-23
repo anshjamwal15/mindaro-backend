@@ -14,10 +14,12 @@ import com.dekhokaun.mindarobackend.repository.CategoryRepository;
 import com.dekhokaun.mindarobackend.repository.MentorRepository;
 import com.dekhokaun.mindarobackend.repository.RatingRepository;
 import com.dekhokaun.mindarobackend.repository.UserRepository;
+import com.dekhokaun.mindarobackend.security.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,10 @@ public class MentorService {
 
     private final RatingRepository ratingRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
+    private final JwtUtil jwtUtil;
+
     /**
      * Add a new mentor
      */
@@ -46,6 +52,9 @@ public class MentorService {
         Mentor mentor = new Mentor();
         mentor.setName(request.getName());
         mentor.setEmail(request.getEmail());
+        mentor.setMobile(request.getMobile());
+        mentor.setPwd(passwordEncoder.encode(request.getPassword()));
+        mentor.setMentorfbid("");
         mentor.setTotalexpyrs(request.getExperience());
         mentor.setRating(request.getRating());
 
@@ -64,20 +73,36 @@ public class MentorService {
             // User exists, update with mentor reference
             user.setMentor(savedMentor);
             user.setUtype(UserType.MENTOR);
-            userRepository.save(user);
+            user.setMobile(request.getMobile());
+            user.setPwd(passwordEncoder.encode(request.getPassword()));
+            
+            // Generate and save JWT token
+            String jwtToken = jwtUtil.generateToken(user.getEmail(), user.getId());
+            user.setJwtToken(jwtToken);
+            
+            user = userRepository.save(user);
         } else {
             // Create new user with mentor reference
             User newUser = new User();
             newUser.setName(request.getName());
             newUser.setEmail(request.getEmail());
-            newUser.setMobile(0L); // Default mobile, can be updated later
+            newUser.setMobile(request.getMobile());
             newUser.setUtype(UserType.MENTOR);
             newUser.setMentor(savedMentor);
             newUser.setIsProfileCompleted(false);
-            userRepository.save(newUser);
+            newUser.setPwd(passwordEncoder.encode(request.getPassword()));
+            
+            // Save user first to get the ID
+            newUser = userRepository.save(newUser);
+            
+            // Generate and save JWT token
+            String jwtToken = jwtUtil.generateToken(newUser.getEmail(), newUser.getId());
+            newUser.setJwtToken(jwtToken);
+            
+            user = userRepository.save(newUser);
         }
 
-        return toContract(savedMentor);
+        return toContract(savedMentor, user);
     }
 
     public List<MentorResponse> getMentors() {
@@ -156,8 +181,12 @@ public class MentorService {
     }
 
     private MentorResponse toContract(Mentor mentor) {
+        return toContract(mentor, null);
+    }
+
+    private MentorResponse toContract(Mentor mentor, User user) {
         MentorResponse res = new MentorResponse();
-        res.setId(mentor.getUmid() != null ? mentor.getUmid() : 0);
+        res.setId(mentor.getId()); // Set the UUID as the primary id
         res.setName(mentor.getName());
         res.setEmail(mentor.getEmail());
         res.setMobile(mentor.getMobile() != null ? String.valueOf(mentor.getMobile()) : null);
@@ -179,6 +208,13 @@ public class MentorService {
         res.setRating(mentor.getRating());
         res.setRatingCount(mentor.getRatingCount());
         res.setCreatedAt(mentor.getCreatedAt() != null ? mentor.getCreatedAt().toString() : null);
+        
+        // Add user-related fields if user is provided
+        if (user != null) {
+            res.setJwtToken(user.getJwtToken());
+            res.setUserId(user.getId());
+        }
+        
         return res;
     }
 

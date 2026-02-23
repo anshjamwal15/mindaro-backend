@@ -3,6 +3,7 @@ package com.dekhokaun.mindarobackend.payload.response;
 import lombok.Data;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Contract aligned with admin-dashboard Mentor type.
@@ -10,10 +11,9 @@ import java.util.List;
 @Data
 public class MentorResponse {
     /**
-     * Numeric mentor id used by the admin dashboard.
-     * Mapped from Mentor.umid.
+     * UUID of the mentor (primary identifier)
      */
-    private Integer id;
+    private UUID id;
 
     private String name;
     private String email;
@@ -35,4 +35,10 @@ public class MentorResponse {
 
     /** ISO string */
     private String createdAt;
+
+    /** JWT token for authentication */
+    private String jwtToken;
+
+    /** User ID associated with this mentor */
+    private UUID userId;
 }

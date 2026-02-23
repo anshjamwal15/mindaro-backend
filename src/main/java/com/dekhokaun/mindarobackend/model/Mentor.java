@@ -49,7 +49,6 @@ public class Mentor {
     @Column(length = 5)
     private String country;
 
-    @Column(length = 11, nullable = false)
     private String pwd;
 
     @Enumerated(EnumType.STRING)
