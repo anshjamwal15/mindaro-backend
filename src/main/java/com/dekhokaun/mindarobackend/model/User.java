@@ -70,6 +70,9 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String token;
 
+    @Column(columnDefinition = "TEXT")
+    private String jwtToken;
+
     @Column(precision = 5, scale = 2)
     private BigDecimal rating;
 

@@ -15,4 +15,5 @@ public class UserResponse {
     private String country;
     private String userType;
     private boolean isProfileCompleted;
+    private String jwtToken;
 }

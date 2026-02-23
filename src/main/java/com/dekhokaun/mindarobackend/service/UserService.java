@@ -8,9 +8,9 @@ import com.dekhokaun.mindarobackend.payload.request.UpdateUserRequest;
 import com.dekhokaun.mindarobackend.payload.request.UserRequest;
 import com.dekhokaun.mindarobackend.payload.response.UserResponse;
 import com.dekhokaun.mindarobackend.repository.UserRepository;
+import com.dekhokaun.mindarobackend.security.JwtUtil;
 import com.dekhokaun.mindarobackend.utils.RegexUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +24,8 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public UserResponse authenticateOrRegister(UserRequest request) {
@@ -43,6 +44,12 @@ public class UserService {
                     throw new InvalidRequestException("Invalid password");
                 }
             }
+
+            // Generate and save JWT token
+            String jwtToken = jwtUtil.generateToken(user.getEmail(), user.getId());
+            user.setJwtToken(jwtToken);
+            userRepository.save(user);
+
             return mapToUserResponse(user);
         }
 
@@ -57,9 +64,15 @@ public class UserService {
         if (mobile != null && !mobile.isEmpty() && RegexUtils.isValidPhoneNumber(request.getMobile(), "IN")) {
             newUser.setMobile(Long.valueOf(request.getMobile()));
         }
-        userRepository.save(newUser);
 
-        return mapToUserResponse(newUser);
+        User savedUser = userRepository.save(newUser);
+
+        // Generate and save JWT token
+        String jwtToken = jwtUtil.generateToken(savedUser.getEmail(), savedUser.getId());
+        savedUser.setJwtToken(jwtToken);
+        userRepository.save(savedUser);
+
+        return mapToUserResponse(savedUser);
     }
     @Transactional
     public UserResponse login(String email, String password, String method, String token) {
@@ -76,7 +89,34 @@ public class UserService {
             }
         }
 
+        // Generate and save JWT token
+        String jwtToken = jwtUtil.generateToken(user.getEmail(), user.getId());
+        user.setJwtToken(jwtToken);
+        userRepository.save(user);
+
         return mapToUserResponse(user);
+    }
+
+    @Transactional
+    public UserResponse tokenSignIn(String jwtToken) {
+        try {
+            String email = jwtUtil.extractEmail(jwtToken);
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new InvalidAuthException("User not found"));
+
+            if (!jwtUtil.validateToken(jwtToken, email)) {
+                throw new InvalidAuthException("Invalid or expired token");
+            }
+
+            // Optionally refresh the token
+            String newJwtToken = jwtUtil.generateToken(user.getEmail(), user.getId());
+            user.setJwtToken(newJwtToken);
+            userRepository.save(user);
+
+            return mapToUserResponse(user);
+        } catch (Exception e) {
+            throw new InvalidAuthException("Invalid token: " + e.getMessage());
+        }
     }
 
     public UserResponse getUserProfile(String email) {
@@ -132,7 +172,16 @@ public class UserService {
     }
 
     private UserResponse mapToUserResponse(User user) {
-        return new UserResponse(user.getId(), user.getName(), user.getEmail(), String.valueOf(user.getMobile()), user.getCountry(), user.getUtype().toString(), user.getIsProfileCompleted());
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                String.valueOf(user.getMobile()),
+                user.getCountry(),
+                user.getUtype().toString(),
+                user.getIsProfileCompleted(),
+                user.getJwtToken()
+        );
     }
 
     public void createTestUser() {

@@ -1,17 +1,7 @@
 package com.dekhokaun.mindarobackend.controller;
 
-import com.dekhokaun.mindarobackend.payload.request.UpdateUserRequest;
-import com.dekhokaun.mindarobackend.payload.request.UserRequest;
-import com.dekhokaun.mindarobackend.payload.response.UserResponse;
-import com.dekhokaun.mindarobackend.service.UserService;
-import com.dekhokaun.mindarobackend.utils.ObjectMapperUtils;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import com.dekhokaun.mindarobackend.payload.request.LoginRequest;
+import com.dekhokaun.mindarobackend.payload.request.TokenSignInRequest;
 import com.dekhokaun.mindarobackend.payload.request.UpdateUserRequest;
 import com.dekhokaun.mindarobackend.payload.request.UserRequest;
 import com.dekhokaun.mindarobackend.payload.response.UserResponse;
@@ -34,7 +24,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Operation(summary = "Login user", description = "Authenticates an existing user with email and password or Google token")
+    @Operation(summary = "Login user", description = "Authenticates an existing user with email and password or Google token, returns JWT token")
     @PostMapping("/login")
     public ResponseEntity<UserResponse> loginUser(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(userService.login(
@@ -43,6 +33,12 @@ public class UserController {
                 request.getMethod(),
                 request.getToken()
         ));
+    }
+
+    @Operation(summary = "Token-based sign in", description = "Authenticates user using JWT token")
+    @PostMapping("/token-signin")
+    public ResponseEntity<UserResponse> tokenSignIn(@RequestBody TokenSignInRequest request) {
+        return ResponseEntity.ok(userService.tokenSignIn(request.getJwtToken()));
     }
 
     @Operation(summary = "Create a new user", description = "Registers a new user in the system")

@@ -1,0 +1,500 @@
+================================================================================
+                    JWT AUTHENTICATION - FRONTEND API GUIDE
+================================================================================
+
+BASE URL: http://localhost:3000
+
+================================================================================
+1. USER REGISTRATION
+================================================================================
+
+Endpoint: POST /api/user/register
+Description: Register a new user and receive JWT token
+Authentication: Not required
+
+REQUEST HEADERS:
+Content-Type: application/json
+
+REQUEST BODY:
+{
+  "email": "user@example.com",
+  "name": "John Doe",
+  "password": "securePassword123",
+  "mobile": "9876543210",
+  "country": "IN",
+  "method": "password"
+}
+
+RESPONSE (200 OK):
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "John Doe",
+  "email": "user@example.com",
+  "mobile": "9876543210",
+  "country": "IN",
+  "user_type": "CUSTOMER",
+  "is_profile_completed": false,
+  "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzA5NTU2MDAwLCJleHAiOjE3MTIxNDgwMDB9.signature"
+}
+
+ERROR RESPONSES:
+400 Bad Request - Invalid email or password format
+409 Conflict - User already exists
+
+FRONTEND USAGE:
+1. Send registration request
+2. Store jwt_token in localStorage/sessionStorage
+3. Store user details (id, email, name) for app state
+4. Redirect to dashboard/home
+
+================================================================================
+2. USER LOGIN (PASSWORD)
+================================================================================
+
+Endpoint: POST /api/user/login
+Description: Login with email and password, receive JWT token
+Authentication: Not required
+
+REQUEST HEADERS:
+Content-Type: application/json
+
+REQUEST BODY:
+{
+  "email": "user@example.com",
+  "password": "securePassword123",
+  "method": "password"
+}
+
+RESPONSE (200 OK):
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "John Doe",
+  "email": "user@example.com",
+  "mobile": "9876543210",
+  "country": "IN",
+  "user_type": "CUSTOMER",
+  "is_profile_completed": true,
+  "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzA5NTU2MDAwLCJleHAiOjE3MTIxNDgwMDB9.signature"
+}
+
+ERROR RESPONSES:
+401 Unauthorized - Invalid email or password
+404 Not Found - User not found
+
+FRONTEND USAGE:
+1. Send login request
+2. Store jwt_token in localStorage/sessionStorage
+3. Store user details for app state
+4. Redirect to dashboard/home
+
+================================================================================
+3. USER LOGIN (GOOGLE)
+================================================================================
+
+Endpoint: POST /api/user/login
+Description: Login with Google OAuth token
+Authentication: Not required
+
+REQUEST HEADERS:
+Content-Type: application/json
+
+REQUEST BODY:
+{
+  "email": "user@example.com",
+  "method": "google",
+  "token": "google_oauth_token_here"
+}
+
+RESPONSE (200 OK):
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "John Doe",
+  "email": "user@example.com",
+  "mobile": "9876543210",
+  "country": "IN",
+  "user_type": "CUSTOMER",
+  "is_profile_completed": true,
+  "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzA5NTU2MDAwLCJleHAiOjE3MTIxNDgwMDB9.signature"
+}
+
+ERROR RESPONSES:
+401 Unauthorized - Invalid Google token
+404 Not Found - User not found
+
+FRONTEND USAGE:
+1. Get Google OAuth token from Google Sign-In
+2. Send login request with Google token
+3. Store jwt_token in localStorage/sessionStorage
+4. Store user details for app state
+5. Redirect to dashboard/home
+
+================================================================================
+4. TOKEN-BASED SIGN IN (AUTO LOGIN)
+================================================================================
+
+Endpoint: POST /api/user/token-signin
+Description: Authenticate using stored JWT token (for auto-login on app start)
+Authentication: Not required (token in body)
+
+REQUEST HEADERS:
+Content-Type: application/json
+
+REQUEST BODY:
+{
+  "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzA5NTU2MDAwLCJleHAiOjE3MTIxNDgwMDB9.signature"
+}
+
+RESPONSE (200 OK):
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "John Doe",
+  "email": "user@example.com",
+  "mobile": "9876543210",
+  "country": "IN",
+  "user_type": "CUSTOMER",
+  "is_profile_completed": true,
+  "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.NEW_REFRESHED_TOKEN.signature"
+}
+
+ERROR RESPONSES:
+401 Unauthorized - Invalid or expired token
+404 Not Found - User not found
+
+FRONTEND USAGE:
+1. On app start, check if jwt_token exists in localStorage
+2. If exists, call this endpoint to validate and refresh token
+3. Update stored jwt_token with new token from response
+4. Update user details in app state
+5. If successful, keep user logged in
+6. If fails, clear storage and redirect to login
+
+================================================================================
+5. GET USER PROFILE
+================================================================================
+
+Endpoint: GET /api/user/{email}
+Description: Get user profile by email
+Authentication: Required (JWT token)
+
+REQUEST HEADERS:
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Content-Type: application/json
+
+REQUEST PARAMETERS:
+{email} - User's email address in URL path
+
+EXAMPLE URL:
+GET /api/user/user@example.com
+
+RESPONSE (200 OK):
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "John Doe",
+  "email": "user@example.com",
+  "mobile": "9876543210",
+  "country": "IN",
+  "user_type": "CUSTOMER",
+  "is_profile_completed": true,
+  "jwt_token": null
+}
+
+ERROR RESPONSES:
+401 Unauthorized - Missing or invalid JWT token
+404 Not Found - User not found
+
+FRONTEND USAGE:
+1. Include JWT token in Authorization header
+2. Fetch user profile data
+3. Display in profile page
+
+================================================================================
+6. UPDATE USER PROFILE
+================================================================================
+
+Endpoint: PUT /api/user/update
+Description: Update user profile information
+Authentication: Required (JWT token)
+
+REQUEST HEADERS:
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Content-Type: application/json
+
+REQUEST BODY:
+{
+  "email": "user@example.com",
+  "name": "John Updated",
+  "mobile": "9876543210",
+  "country": "US"
+}
+
+RESPONSE (200 OK):
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "John Updated",
+  "email": "user@example.com",
+  "mobile": "9876543210",
+  "country": "US",
+  "user_type": "CUSTOMER",
+  "is_profile_completed": true,
+  "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+ERROR RESPONSES:
+400 Bad Request - Invalid data format
+401 Unauthorized - Missing or invalid JWT token
+404 Not Found - User not found
+
+FRONTEND USAGE:
+1. Include JWT token in Authorization header
+2. Send updated profile data
+3. Update user details in app state
+4. Show success message
+
+================================================================================
+7. LOGOUT
+================================================================================
+
+Endpoint: N/A (Client-side only)
+Description: Logout user by clearing stored token
+Authentication: Not required
+
+FRONTEND IMPLEMENTATION:
+1. Clear jwt_token from localStorage/sessionStorage
+2. Clear user data from app state
+3. Redirect to login page
+
+CODE EXAMPLE (JavaScript):
+localStorage.removeItem('jwt_token');
+localStorage.removeItem('user_data');
+// Redirect to login
+window.location.href = '/login';
+
+================================================================================
+                        FRONTEND IMPLEMENTATION GUIDE
+================================================================================
+
+1. STORING JWT TOKEN
+--------------------
+// After successful login/register
+localStorage.setItem('jwt_token', response.jwt_token);
+localStorage.setItem('user_data', JSON.stringify({
+  id: response.id,
+  name: response.name,
+  email: response.email,
+  mobile: response.mobile,
+  country: response.country,
+  user_type: response.user_type,
+  is_profile_completed: response.is_profile_completed
+}));
+
+2. MAKING AUTHENTICATED REQUESTS
+---------------------------------
+const token = localStorage.getItem('jwt_token');
+
+fetch('http://localhost:3000/api/user/user@example.com', {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => {
+  if (error.status === 401) {
+    // Token expired or invalid - redirect to login
+    localStorage.clear();
+    window.location.href = '/login';
+  }
+});
+
+3. AUTO-LOGIN ON APP START
+---------------------------
+// Check if user has stored token
+const token = localStorage.getItem('jwt_token');
+
+if (token) {
+  // Validate token with backend
+  fetch('http://localhost:3000/api/user/token-signin', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ jwt_token: token })
+  })
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Token invalid');
+    }
+  })
+  .then(data => {
+    // Update token and user data
+    localStorage.setItem('jwt_token', data.jwt_token);
+    localStorage.setItem('user_data', JSON.stringify(data));
+    // User is authenticated - proceed to app
+  })
+  .catch(error => {
+    // Token invalid - clear and redirect to login
+    localStorage.clear();
+    window.location.href = '/login';
+  });
+} else {
+  // No token - redirect to login
+  window.location.href = '/login';
+}
+
+4. HANDLING TOKEN EXPIRATION
+-----------------------------
+// Create an axios interceptor or fetch wrapper
+function authenticatedFetch(url, options = {}) {
+  const token = localStorage.getItem('jwt_token');
+  
+  const headers = {
+    ...options.headers,
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  };
+
+  return fetch(url, { ...options, headers })
+    .then(response => {
+      if (response.status === 401) {
+        // Token expired - logout
+        localStorage.clear();
+        window.location.href = '/login';
+        throw new Error('Unauthorized');
+      }
+      return response.json();
+    });
+}
+
+5. REACT EXAMPLE (with Context)
+--------------------------------
+// AuthContext.js
+import React, { createContext, useState, useEffect } from 'react';
+
+export const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('jwt_token'));
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (token) {
+      // Validate token on mount
+      fetch('http://localhost:3000/api/user/token-signin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jwt_token: token })
+      })
+      .then(res => res.json())
+      .then(data => {
+        setUser(data);
+        setToken(data.jwt_token);
+        localStorage.setItem('jwt_token', data.jwt_token);
+        setLoading(false);
+      })
+      .catch(() => {
+        logout();
+        setLoading(false);
+      });
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const login = async (email, password) => {
+    const response = await fetch('http://localhost:3000/api/user/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, method: 'password' })
+    });
+    const data = await response.json();
+    setUser(data);
+    setToken(data.jwt_token);
+    localStorage.setItem('jwt_token', data.jwt_token);
+    return data;
+  };
+
+  const logout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem('jwt_token');
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+6. AXIOS INTERCEPTOR EXAMPLE
+-----------------------------
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:3000/api'
+});
+
+// Request interceptor - add token to all requests
+api.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem('jwt_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  error => Promise.reject(error)
+);
+
+// Response interceptor - handle token expiration
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      localStorage.clear();
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;
+
+// Usage
+api.get('/user/user@example.com')
+  .then(response => console.log(response.data))
+  .catch(error => console.error(error));
+
+================================================================================
+                            IMPORTANT NOTES
+================================================================================
+
+1. TOKEN EXPIRY: JWT tokens expire after 30 days. After expiry, user must login again.
+
+2. TOKEN REFRESH: The /api/user/token-signin endpoint automatically refreshes the token.
+   Call this periodically (e.g., on app start) to keep user logged in.
+
+3. SECURITY:
+   - Always use HTTPS in production
+   - Never expose JWT token in URLs or logs
+   - Store token in httpOnly cookies for better security (requires backend changes)
+   - Implement token refresh mechanism for better UX
+
+4. ERROR HANDLING:
+   - 401 Unauthorized: Token invalid/expired - logout user
+   - 403 Forbidden: User doesn't have permission
+   - 404 Not Found: Resource not found
+   - 500 Internal Server Error: Backend issue
+
+5. SNAKE_CASE: All API responses use snake_case (e.g., jwt_token, is_profile_completed)
+
+6. TESTING: Use Swagger UI at http://localhost:3000/swagger-ui.html to test APIs
+
+================================================================================
+                              END OF DOCUMENT
+================================================================================
