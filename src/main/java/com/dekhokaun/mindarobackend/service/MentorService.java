@@ -111,6 +111,10 @@ public class MentorService {
                 .toList();
     }
 
+    public List<Mentor> getAllMentors() {
+        return mentorRepository.findAll();
+    }
+
     public MentorResponse getMentorById(Integer id) {
         Mentor mentor = mentorRepository.findByUmid(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Mentor not found with id: " + id));

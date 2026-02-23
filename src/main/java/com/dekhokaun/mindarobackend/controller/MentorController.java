@@ -1,5 +1,6 @@
 package com.dekhokaun.mindarobackend.controller;
 
+import com.dekhokaun.mindarobackend.model.Mentor;
 import com.dekhokaun.mindarobackend.payload.request.MentorRequest;
 import com.dekhokaun.mindarobackend.payload.request.MentorUpdateRequest;
 import com.dekhokaun.mindarobackend.payload.response.MentorResponse;
@@ -32,8 +33,8 @@ public class MentorController {
 
     @Operation(summary = "Get all mentors", description = "Retrieves a list of all mentors")
     @GetMapping("/list")
-    public ResponseEntity<List<MentorResponse>> getMentors() {
-        return ResponseEntity.ok(mentorService.getMentors());
+    public ResponseEntity<List<Mentor>> getMentors() {
+        return ResponseEntity.ok(mentorService.getAllMentors());
     }
 
     @Operation(summary = "Get mentor by id", description = "Retrieves mentor details by id")
