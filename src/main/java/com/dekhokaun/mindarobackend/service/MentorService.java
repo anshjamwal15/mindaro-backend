@@ -6,6 +6,7 @@ import com.dekhokaun.mindarobackend.model.Category;
 import com.dekhokaun.mindarobackend.model.Mentor;
 import com.dekhokaun.mindarobackend.model.Rating;
 import com.dekhokaun.mindarobackend.model.User;
+import com.dekhokaun.mindarobackend.model.UserType;
 import com.dekhokaun.mindarobackend.payload.request.MentorRequest;
 import com.dekhokaun.mindarobackend.payload.request.MentorUpdateRequest;
 import com.dekhokaun.mindarobackend.payload.response.MentorResponse;
@@ -39,10 +40,12 @@ public class MentorService {
     /**
      * Add a new mentor
      */
+    @Transactional
     public MentorResponse addMentor(MentorRequest request) {
-        // NOTE: This endpoint isn't used by the admin-dashboard, but we keep it working.
+        // Create mentor entity
         Mentor mentor = new Mentor();
         mentor.setName(request.getName());
+        mentor.setEmail(request.getEmail());
         mentor.setTotalexpyrs(request.getExperience());
         mentor.setRating(request.getRating());
 
@@ -52,8 +55,29 @@ public class MentorService {
                     .ifPresent(cat -> mentor.setCategories(Set.of(cat)));
         }
 
-        Mentor saved = mentorRepository.save(mentor);
-        return toContract(saved);
+        Mentor savedMentor = mentorRepository.save(mentor);
+
+        // Check if user exists with the same email
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+
+        if (user != null) {
+            // User exists, update with mentor reference
+            user.setMentor(savedMentor);
+            user.setUtype(UserType.MENTOR);
+            userRepository.save(user);
+        } else {
+            // Create new user with mentor reference
+            User newUser = new User();
+            newUser.setName(request.getName());
+            newUser.setEmail(request.getEmail());
+            newUser.setMobile(0L); // Default mobile, can be updated later
+            newUser.setUtype(UserType.MENTOR);
+            newUser.setMentor(savedMentor);
+            newUser.setIsProfileCompleted(false);
+            userRepository.save(newUser);
+        }
+
+        return toContract(savedMentor);
     }
 
     public List<MentorResponse> getMentors() {
