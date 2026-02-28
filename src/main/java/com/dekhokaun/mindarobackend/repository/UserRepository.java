@@ -46,4 +46,7 @@ public interface UserRepository extends BaseRepository<User> {
     boolean existsByEmail(String email);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByMentor(com.dekhokaun.mindarobackend.model.Mentor mentor);
+
 }

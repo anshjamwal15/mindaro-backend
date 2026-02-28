@@ -202,5 +202,15 @@ public class UserService {
         userRepository.save(testUser);
     }
 
+    @Transactional
+    public void updateDeviceToken(String userId, String deviceToken) {
+        User user = userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new InvalidRequestException("User not found with id: " + userId));
+
+        user.setDeviceToken(deviceToken);
+        userRepository.save(user);
+    }
+
+
 
 }

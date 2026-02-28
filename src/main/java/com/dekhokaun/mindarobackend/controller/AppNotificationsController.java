@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/notifications")
-@Tag(name = "Notifications", description = "In-app notification APIs")
+@RequestMapping("/api/app-notifications")
+@Tag(name = "App Notifications", description = "In-app notification APIs")
 public class AppNotificationsController {
 
     private final AppNotificationService appNotificationService;

@@ -111,4 +111,8 @@ public class User {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    @Column(columnDefinition = "TEXT")
+    private String deviceToken;
+
 }

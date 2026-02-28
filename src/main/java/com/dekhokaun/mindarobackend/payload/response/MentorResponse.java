@@ -41,4 +41,8 @@ public class MentorResponse {
 
     /** User ID associated with this mentor */
     private UUID userId;
+
+    /** Device token for push notifications */
+    private String deviceToken;
+
 }

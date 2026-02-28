@@ -26,10 +26,12 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/user/login", "/api/user/register", "/api/user/token-signin").permitAll()
-                        .requestMatchers("/api/mentor", "/api/mentor/list").permitAll()
+                        // Swagger documentation - publicly accessible
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                        .anyRequest().authenticated()
+                        // Admin APIs - require authentication
+                        .requestMatchers("/api/admin/**").authenticated()
+                        // All other APIs - publicly accessible
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

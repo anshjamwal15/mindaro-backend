@@ -217,6 +217,14 @@ public class MentorService {
         if (user != null) {
             res.setJwtToken(user.getJwtToken());
             res.setUserId(user.getId());
+            res.setDeviceToken(user.getDeviceToken());
+        } else {
+            // Try to find user by mentor to include device token
+            User foundUser = userRepository.findByMentor(mentor).orElse(null);
+            if (foundUser != null) {
+                res.setUserId(foundUser.getId());
+                res.setDeviceToken(foundUser.getDeviceToken());
+            }
         }
         
         return res;

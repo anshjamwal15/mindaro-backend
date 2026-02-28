@@ -1,134 +1,188 @@
 package com.dekhokaun.mindarobackend.service;
 
-import com.dekhokaun.mindarobackend.payload.request.NotifyCallRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.firebase.cloud.FirestoreClient;
+import com.dekhokaun.mindarobackend.payload.request.CallNotificationRequest;
+import com.dekhokaun.mindarobackend.payload.request.MessageNotificationRequest;
 import com.google.firebase.messaging.*;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class NotificationService {
 
-    public void sendNotification(NotifyCallRequest request) {
+    public void sendCallNotification(CallNotificationRequest request) {
+        log.info("=== CALL NOTIFICATION REQUEST ===");
+        log.info("Type: {}", request.getType());
+        log.info("Device Token: {}", maskToken(request.getDeviceToken()));
+        log.info("Caller Name: {}", request.getCallerName());
+        log.info("Caller ID: {}", request.getCallerId());
+        log.info("Room Name: {}", request.getRoomName());
+        log.info("Call ID: {}", request.getCallId());
+        
         try {
-            String body = String.format("%s is trying to %s call you",
-                    request.getUserName(),
-                    request.getCallType().getValue());
+            // Data payload
+            Map<String, String> data = new HashMap<>();
+            data.put("type", request.getType());
+            data.put("callerName", request.getCallerName());
+            data.put("callerId", request.getCallerId());
+            data.put("roomName", request.getRoomName());
+            data.put("callId", request.getCallId());
 
+            // Notification title based on call type
+            String title = request.getType().equals("video_call") 
+                    ? "Incoming Video Call" 
+                    : "Incoming Voice Call";
+
+            // Notification payload
             Notification notification = Notification.builder()
-                    .setTitle("Incoming Call")
-                    .setBody(body)
+                    .setTitle(title)
+                    .setBody(String.format("%s is calling...", request.getCallerName()))
                     .build();
 
-            final Map<String, Object> payload = buildCallPayload(request);
+            // Android-specific configuration
+            AndroidConfig androidConfig = AndroidConfig.builder()
+                    .setPriority(AndroidConfig.Priority.HIGH)
+                    .setNotification(AndroidNotification.builder()
+                            .setChannelId("calls")
+                            .setSound("default")
+                            .setPriority(AndroidNotification.Priority.MAX)
+                            .setDefaultVibrateTimings(false)
+                            .build())
+                    .build();
 
-            ObjectMapper mapper = new ObjectMapper();
-            String json = mapper.writeValueAsString(payload);
+            // APNS (iOS) configuration
+            ApnsConfig apnsConfig = ApnsConfig.builder()
+                    .putHeader("apns-priority", "10")
+                    .setAps(Aps.builder()
+                            .setSound("default")
+                            .setBadge(1)
+                            .build())
+                    .build();
 
-            Map<String, String> data = new HashMap<>();
-            data.put("type", "call");
-            data.put("payload", json);
-
+            // Build the complete message
             Message message = Message.builder()
-                    .setToken(getUserTokenById(request.getUserId()))
+                    .setToken(request.getDeviceToken())
                     .setNotification(notification)
                     .putAllData(data)
+                    .setAndroidConfig(androidConfig)
+                    .setApnsConfig(apnsConfig)
                     .build();
 
+            log.info("Sending Firebase message with data: {}", data);
             String response = FirebaseMessaging.getInstance().send(message);
-            log.info("Successfully sent notification: {}", response);
+            
+            log.info("=== CALL NOTIFICATION RESPONSE ===");
+            log.info("Firebase Response: {}", response);
+            log.info("Status: SUCCESS");
+            log.info("Notification Type: {}", request.getType());
+            log.info("===================================");
 
         } catch (FirebaseMessagingException e) {
-            log.error("Failed to send notification", e);
-            throw new RuntimeException("Failed to send notification", e);
+            log.error("=== CALL NOTIFICATION FAILED ===");
+            log.error("Error Code: {}", e.getErrorCode());
+            log.error("Error Message: {}", e.getMessage());
+            log.error("Messaging Error Code: {}", e.getMessagingErrorCode());
+            log.error("HTTP Status Code: {}", e.getHttpResponse() != null ? e.getHttpResponse().getStatusCode() : "N/A");
+            log.error("Request Type: {}", request.getType());
+            log.error("Device Token (masked): {}", maskToken(request.getDeviceToken()));
+            log.error("================================", e);
+            throw new RuntimeException("Failed to send call notification: " + e.getMessage(), e);
         } catch (Exception e) {
-            log.error("Unexpected error during notification send", e);
-            throw new RuntimeException("Unexpected error during notification send", e);
+            log.error("=== UNEXPECTED ERROR ===");
+            log.error("Error: {}", e.getMessage());
+            log.error("Request Type: {}", request.getType());
+            log.error("========================", e);
+            throw new RuntimeException("Unexpected error during call notification send: " + e.getMessage(), e);
         }
     }
 
-    public void sendMulticastNotification(List<String> tokens, String title, String body, Map<String, String> data) {
+    public void sendMessageNotification(MessageNotificationRequest request) {
+        log.info("=== MESSAGE NOTIFICATION REQUEST ===");
+        log.info("Device Token: {}", maskToken(request.getDeviceToken()));
+        log.info("Sender Name: {}", request.getSenderName());
+        log.info("Sender ID: {}", request.getSenderId());
+        log.info("Message: {}", request.getMessage());
+        log.info("Chat Room ID: {}", request.getChatRoomId());
+        
         try {
-            MulticastMessage message = MulticastMessage.builder()
-                    .addAllTokens(tokens)
-                    .setNotification(Notification.builder()
-                            .setTitle(title)
-                            .setBody(body)
-                            .build())
-                    .putAllData(data)
+            // Data payload
+            Map<String, String> data = new HashMap<>();
+            data.put("type", "message");
+            data.put("senderName", request.getSenderName());
+            data.put("senderId", request.getSenderId());
+            data.put("message", request.getMessage());
+            data.put("chatRoomId", request.getChatRoomId());
+
+            // Notification payload
+            Notification notification = Notification.builder()
+                    .setTitle(request.getSenderName())
+                    .setBody(request.getMessage())
                     .build();
 
-            BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
-            log.info("Successfully sent multicast notification: {} successful, {} failed",
-                    response.getSuccessCount(), response.getFailureCount());
-        } catch (FirebaseMessagingException e) {
-            log.error("Failed to send multicast notification", e);
-            throw new RuntimeException("Failed to send multicast notification", e);
-        }
-    }
+            // Android-specific configuration
+            AndroidConfig androidConfig = AndroidConfig.builder()
+                    .setPriority(AndroidConfig.Priority.HIGH)
+                    .setNotification(AndroidNotification.builder()
+                            .setChannelId("messages")
+                            .setSound("default")
+                            .setPriority(AndroidNotification.Priority.HIGH)
+                            .setDefaultVibrateTimings(false)
+                            .build())
+                    .build();
 
-    public void sendTopicNotification(String topic, String title, String body, Map<String, String> data) {
-        try {
+            // APNS (iOS) configuration
+            ApnsConfig apnsConfig = ApnsConfig.builder()
+                    .putHeader("apns-priority", "10")
+                    .setAps(Aps.builder()
+                            .setSound("default")
+                            .setBadge(1)
+                            .build())
+                    .build();
+
+            // Build the complete message
             Message message = Message.builder()
-                    .setTopic(topic)
-                    .setNotification(Notification.builder()
-                            .setTitle(title)
-                            .setBody(body)
-                            .build())
+                    .setToken(request.getDeviceToken())
+                    .setNotification(notification)
                     .putAllData(data)
+                    .setAndroidConfig(androidConfig)
+                    .setApnsConfig(apnsConfig)
                     .build();
 
+            log.info("Sending Firebase message with data: {}", data);
             String response = FirebaseMessaging.getInstance().send(message);
-            log.info("Successfully sent topic notification: {}", response);
+            
+            log.info("=== MESSAGE NOTIFICATION RESPONSE ===");
+            log.info("Firebase Response: {}", response);
+            log.info("Status: SUCCESS");
+            log.info("Sender: {}", request.getSenderName());
+            log.info("Chat Room: {}", request.getChatRoomId());
+            log.info("=====================================");
+
         } catch (FirebaseMessagingException e) {
-            log.error("Failed to send topic notification", e);
-            throw new RuntimeException("Failed to send topic notification", e);
-        }
-    }
-
-    public String getUserTokenById(String userId) {
-        Firestore db = FirestoreClient.getFirestore();
-        try {
-            ApiFuture<DocumentSnapshot> future = db.collection("users").document(userId).get();
-            DocumentSnapshot document = future.get();
-            if (document.exists()) {
-                return document.getString("user_token");
-            } else {
-                return null;
-            }
+            log.error("=== MESSAGE NOTIFICATION FAILED ===");
+            log.error("Error Code: {}", e.getErrorCode());
+            log.error("Error Message: {}", e.getMessage());
+            log.error("Sender: {}", request.getSenderName());
+            log.error("===================================", e);
+            throw new RuntimeException("Failed to send message notification: " + e.getMessage(), e);
         } catch (Exception e) {
-            System.err.println("Error fetching user token: " + e.getMessage());
-            return null;
+            log.error("=== UNEXPECTED ERROR ===");
+            log.error("Error: {}", e.getMessage());
+            log.error("Sender: {}", request.getSenderName());
+            log.error("========================", e);
+            throw new RuntimeException("Unexpected error during message notification send: " + e.getMessage(), e);
         }
     }
 
-    public Map<String, Object> buildCallPayload(NotifyCallRequest request) {
-        NotifyCallRequest.CallType callType = request.getCallType();
-        Map<String, String> data = new HashMap<>();
-        data.put("type", "call");
-        data.put("callType", callType.getValue());
-        data.put("title", "Incoming Call");
-        data.put("body", String.format("%s is trying to %s call you", request.getUserName(),
-                "video".equalsIgnoreCase(callType.getValue()) ? "video" : "voice"));
-        data.put("roomId", request.getRoomId());
-        data.put("creatorId", request.getCreatorId());
-        data.put("calleeId", request.getUserId());
-
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("token", getUserTokenById(request.getUserId()));
-        payload.put("data", data);
-
-        return payload;
+    private String maskToken(String token) {
+        if (token == null || token.length() < 20) {
+            return "***";
+        }
+        return token.substring(0, 10) + "..." + token.substring(token.length() - 10);
     }
 }

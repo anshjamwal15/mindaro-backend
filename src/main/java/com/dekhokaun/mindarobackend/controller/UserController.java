@@ -67,4 +67,14 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Update device token", description = "Updates the FCM device token for push notifications")
+    @PutMapping("/{userId}/device-token")
+    public ResponseEntity<String> updateDeviceToken(
+            @Parameter(description = "User ID", required = true) @PathVariable String userId,
+            @Parameter(description = "FCM device token", required = true) @RequestParam String deviceToken) {
+        userService.updateDeviceToken(userId, deviceToken);
+        return ResponseEntity.ok("Device token updated successfully");
+    }
+
 }
