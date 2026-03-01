@@ -3,6 +3,7 @@ package com.dekhokaun.mindarobackend.service;
 import com.dekhokaun.mindarobackend.exception.ResourceNotFoundException;
 import com.dekhokaun.mindarobackend.model.CreditBalance;
 import com.dekhokaun.mindarobackend.model.CreditTransaction;
+import com.dekhokaun.mindarobackend.model.TransactionType;
 import com.dekhokaun.mindarobackend.model.User;
 import com.dekhokaun.mindarobackend.model.Wallet;
 import com.dekhokaun.mindarobackend.model.WalletTransaction;
@@ -53,7 +54,7 @@ public class CreditService {
 
         WalletTransaction wtx = new WalletTransaction();
         wtx.setWallet(savedWallet);
-        wtx.setTransactionType("DEBIT");
+        wtx.setTransactionType(TransactionType.DEBIT);
         wtx.setAmount(request.getAmount());
         wtx.setStatus("SUCCESS");
         wtx.setPaymentGatewayReference(request.getRef());

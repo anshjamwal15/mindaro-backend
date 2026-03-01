@@ -7,9 +7,10 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
-public class WalletAddMoneyRequest {
-    private UUID userId; // Optional - will be extracted from JWT if not provided
+public class WalletUpdateRequest {
+    @NotNull
+    private UUID userId;
     @NotNull
     private BigDecimal amount;
-    private String method; // payment/wallet...
+    private String reason; // Optional reason for the update
 }

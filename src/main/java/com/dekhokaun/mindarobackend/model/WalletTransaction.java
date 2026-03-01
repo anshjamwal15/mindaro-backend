@@ -33,9 +33,17 @@ public class WalletTransaction {
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
-    private String transactionType; // CREDIT (receipt) or DEBIT (payment)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private TransactionType transactionType; // CREDIT (receipt) or DEBIT (payment)
+    
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
+    
+    @Column(length = 20)
     private String status; // PENDING, SUCCESS, FAILED
+    
+    @Column(columnDefinition = "TEXT")
     private String paymentGatewayReference;
 
     @Column(updatable = false)

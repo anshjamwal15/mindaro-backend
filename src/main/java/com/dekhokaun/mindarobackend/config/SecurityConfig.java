@@ -30,7 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         // Admin APIs - require authentication
                         .requestMatchers("/api/admin/**").authenticated()
-                        // All other APIs - publicly accessible
+                        // All other APIs - publicly accessible (JWT filter still runs to set authentication if token is present)
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
