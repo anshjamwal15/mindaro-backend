@@ -8,8 +8,7 @@ import java.util.UUID;
 
 @Data
 public class WalletUpdateRequest {
-    @NotNull
-    private UUID userId;
+    private UUID userId; // Optional - can be extracted from JWT token
     @NotNull
     private BigDecimal amount;
     private String reason; // Optional reason for the update

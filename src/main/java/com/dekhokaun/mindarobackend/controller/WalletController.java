@@ -134,9 +134,17 @@ public class WalletController {
     }
 
 
-    @Operation(summary = "Update wallet amount", description = "Sets wallet balance to a specific amount for a user")
+    @Operation(summary = "Update wallet amount", description = "Updates wallet balance for a user. Provide userId in request body OR send JWT token in Authorization header.")
     @PutMapping("/update")
     public ResponseEntity<WalletBalanceResponse> updateWalletAmount(@Valid @RequestBody WalletUpdateRequest request) {
+        // Extract userId from request body or JWT token
+        if (request.getUserId() == null) {
+            try {
+                request.setUserId(getAuthenticatedUserId());
+            } catch (InvalidAuthException e) {
+                throw new InvalidAuthException("Please provide userId in request body or send a valid JWT token in Authorization header");
+            }
+        }
         Wallet wallet = walletApiService.updateWalletAmount(request.getUserId(), request.getAmount(), request.getReason());
         return ResponseEntity.ok(WalletBalanceResponse.from(wallet));
     }

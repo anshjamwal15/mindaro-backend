@@ -33,8 +33,9 @@ public class NotificationService {
             data.put("roomName", request.getRoomName());
             data.put("callId", request.getCallId());
 
-            // Notification title based on call type
-            String title = request.getType().equals("video_call") 
+            // Notification title based on call type (case-insensitive)
+            String type = request.getType().toUpperCase();
+            String title = type.contains("VIDEO") 
                     ? "Incoming Video Call" 
                     : "Incoming Voice Call";
 
